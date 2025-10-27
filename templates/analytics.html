@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expense Analytics - OCR Tracker</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#14b8a6',
+                        secondary: '#10b981',
+                        accent: '#f59e0b'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gradient-to-br from-teal-50 via-emerald-50 to-cyan-50 min-h-screen">
+    <!-- Header -->
+    <header class="bg-white/80 backdrop-blur-md shadow-lg sticky top-0 z-50 border-b border-teal-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center py-4">
+                <a href="/" class="flex items-center space-x-3 text-primary hover:text-secondary transition-colors">
+                    <i class="fas fa-chart-line text-3xl"></i>
+                    <span class="text-2xl font-bold">Analytics Dashboard</span>
+                </a>
+                <nav class="hidden md:flex items-center space-x-4">
+                    <a href="home.html" class="bg-gradient-to-r from-primary to-secondary text-white px-6 py-2 rounded-full hover:shadow-lg transition-all duration-300 flex items-center space-x-2">
+                        <i class="fas fa-home"></i>
+                        <span>Home</span>
+                    </a>
+                    <a href="expenses.html" class="bg-gradient-to-r from-primary to-secondary text-white px-6 py-2 rounded-full hover:shadow-lg transition-all duration-300 flex items-center space-x-2">
+                        <i class="fas fa-list"></i>
+                        <span>Expenses</span>
+                    </a>
+                    <button onclick="logout()" class="bg-gradient-to-r from-red-500 to-red-600 text-white px-6 py-2 rounded-full hover:shadow-lg transition-all duration-300 flex items-center space-x-2">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span>Logout</span>
+                    </button>
+                </nav>
+                <!-- Mobile menu button -->
+                <button id="mobile-menu-btn" class="md:hidden text-primary hover:text-secondary">
+                    <i class="fas fa-bars text-2xl"></i>
+                </button>
+            </div>
+            <!-- Mobile menu -->
+            <div id="mobile-menu" class="hidden md:hidden pb-4 space-y-2">
+                <a href="dashboard.html" class="block bg-gradient-to-r from-primary to-secondary text-white px-4 py-2 rounded-lg">
+                    <i class="fas fa-home mr-2"></i>Home
+                </a>
+                </a>
+                <a href="expenses.html" class="block bg-gradient-to-r from-primary to-secondary text-white px-4 py-2 rounded-lg">
+                    <i class="fas fa-list mr-2"></i>Expenses
+                </a>
+                <button onclick="window.location.href='login.html'" class="block w-full text-left bg-gradient-to-r from-red-500 to-red-600 text-white px-4 py-2 rounded-lg">
+                    <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Page Header -->
+        <div class="text-center mb-12">
+            <h1 class="text-4xl md:text-5xl font-bold text-gray-800 mb-4">📊 Expense Analytics</h1>
+            <p class="text-xl text-gray-600 max-w-2xl mx-auto">Visual insights into your spending patterns and financial trends</p>
+        </div>
+
+        <!-- Stats Section -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+            <div class="bg-white/70 backdrop-blur-md rounded-2xl p-6 text-center shadow-xl border border-teal-100 hover:shadow-2xl transition-all duration-300 hover:-translate-y-1">
+                <div class="text-4xl mb-4">💰</div>
+                <div class="text-3xl font-bold text-gray-800 mb-2" id="total-spent">₹15,750</div>
+                <div class="text-gray-600">Total Spent</div>
+            </div>
+            <div class="bg-white/70 backdrop-blur-md rounded-2xl p-6 text-center shadow-xl border border-teal-100 hover:shadow-2xl transition-all duration-300 hover:-translate-y-1">
+                <div class="text-4xl mb-4">📊</div>
+                <div class="text-3xl font-bold text-gray-800 mb-2" id="total-expenses">24</div>
+                <div class="text-gray-600">Total Expenses</div>
+            </div>
+            <div class="bg-white/70 backdrop-blur-md rounded-2xl p-6 text-center shadow-xl border border-teal-100 hover:shadow-2xl transition-all duration-300 hover:-translate-y-1">
+                <div class="text-4xl mb-4">📅</div>
+                <div class="text-3xl font-bold text-gray-800 mb-2" id="monthly-count">8</div>
+                <div class="text-gray-600">This Month</div>
+            </div>
+            <div class="bg-white/70 backdrop-blur-md rounded-2xl p-6 text-center shadow-xl border border-teal-100 hover:shadow-2xl transition-all duration-300 hover:-translate-y-1">
+                <div class="text-4xl mb-4">🏷</div>
+                <div class="text-3xl font-bold text-gray-800 mb-2" id="category-count">6</div>
+                <div class="text-gray-600">Categories</div>
+            </div>
+        </div>
+
+        <!-- Charts and Top Expenses -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
+            <!-- Monthly Chart -->
+            <div class="lg:col-span-2 bg-white/70 backdrop-blur-md rounded-2xl p-8 shadow-xl border border-teal-100">
+                <h2 class="text-2xl font-semibold text-gray-800 mb-6 flex items-center">
+                    <i class="fas fa-chart-line text-primary mr-3"></i>
+                    Monthly Spending Trend
+                </h2>
+                <div class="relative h-80">
+                    <canvas id="monthlyChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Top Expenses -->
+            <div class="bg-white/70 backdrop-blur-md rounded-2xl p-8 shadow-xl border border-teal-100">
+                <h2 class="text-2xl font-semibold text-gray-800 mb-6 flex items-center">
+                    <i class="fas fa-trophy text-accent mr-3"></i>
+                    Top 5 Expenses
+                </h2>
+                <div class="space-y-4" id="top-expenses">
+                    <div class="flex justify-between items-center p-4 bg-gradient-to-r from-teal-50 to-emerald-50 rounded-xl border border-teal-100 hover:shadow-md transition-all duration-300">
+                        <span class="font-medium text-gray-800">Grocery Shopping</span>
+                        <span class="font-bold text-primary">₹2,500</span>
+                    </div>
+                    <div class="flex justify-between items-center p-4 bg-gradient-to-r from-teal-50 to-emerald-50 rounded-xl border border-teal-100 hover:shadow-md transition-all duration-300">
+                        <span class="font-medium text-gray-800">Restaurant Bill</span>
+                        <span class="font-bold text-primary">₹1,800</span>
+                    </div>
+                    <div class="flex justify-between items-center p-4 bg-gradient-to-r from-teal-50 to-emerald-50 rounded-xl border border-teal-100 hover:shadow-md transition-all duration-300">
+                        <span class="font-medium text-gray-800">Gas Station</span>
+                        <span class="font-bold text-primary">₹1,200</span>
+                    </div>
+                    <div class="flex justify-between items-center p-4 bg-gradient-to-r from-teal-50 to-emerald-50 rounded-xl border border-teal-100 hover:shadow-md transition-all duration-300">
+                        <span class="font-medium text-gray-800">Coffee Shop</span>
+                        <span class="font-bold text-primary">₹850</span>
+                    </div>
+                    <div class="flex justify-between items-center p-4 bg-gradient-to-r from-teal-50 to-emerald-50 rounded-xl border border-teal-100 hover:shadow-md transition-all duration-300">
+                        <span class="font-medium text-gray-800">Online Shopping</span>
+                        <span class="font-bold text-primary">₹750</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Category Chart -->
+        <div class="bg-white/70 backdrop-blur-md rounded-2xl p-8 shadow-xl border border-teal-100">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-6 flex items-center">
+                <i class="fas fa-pie-chart text-secondary mr-3"></i>
+                Category Breakdown
+            </h2>
+            <div class="relative h-96">
+                <canvas id="categoryChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Export Options -->
+        <div class="mt-12 text-center">
+            <div class="bg-white/70 backdrop-blur-md rounded-2xl p-8 shadow-xl border border-teal-100">
+                <h3 class="text-2xl font-semibold text-gray-800 mb-6">Export Your Data</h3>
+                <div class="flex flex-wrap justify-center gap-4">
+                    <button onclick="exportData('pdf')" class="bg-gradient-to-r from-red-500 to-red-600 text-white px-6 py-3 rounded-xl hover:shadow-lg transition-all duration-300 flex items-center space-x-2">
+                        <i class="fas fa-file-pdf"></i>
+                        <span>Export PDF</span>
+                    </button>
+                    <button onclick="exportData('excel')" class="bg-gradient-to-r from-green-500 to-green-600 text-white px-6 py-3 rounded-xl hover:shadow-lg transition-all duration-300 flex items-center space-x-2">
+                        <i class="fas fa-file-excel"></i>
+                        <span>Export Excel</span>
+                    </button>
+                    <button onclick="exportData('csv')" class="bg-gradient-to-r from-blue-500 to-blue-600 text-white px-6 py-3 rounded-xl hover:shadow-lg transition-all duration-300 flex items-center space-x-2">
+                        <i class="fas fa-file-csv"></i>
+                        <span>Export CSV</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Refresh Button -->
+        <div class="mt-12 text-center">
+            <button onclick="refreshData()" class="bg-gradient-to-r from-primary to-secondary text-white px-6 py-3 rounded-xl hover:shadow-lg transition-all duration-300 flex items-center space-x-2">
+                <i class="fas fa-sync-alt mr-2"></i>
+                <span>Refresh Data</span>
+            </button>
+        </div>
+    </main>
+
+    <script>
+        // Mobile menu toggle
+        document.getElementById('mobile-menu-btn').addEventListener('click', function() {
+            const menu = document.getElementById('mobile-menu');
+            const icon = this.querySelector('i');
+            
+            menu.classList.toggle('hidden');
+            
+            // Animate hamburger to X
+            if (menu.classList.contains('hidden')) {
+                icon.className = 'fas fa-bars text-2xl';
+            } else {
+                icon.className = 'fas fa-times text-2xl';
+            }
+        });
+
+        // Monthly Chart
+        const monthlyCtx = document.getElementById('monthlyChart').getContext('2d');
+        const monthlyChart = new Chart(monthlyCtx, {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                datasets: [{
+                    label: 'Amount Spent (₹)',
+                    data: [2500, 3200, 2800, 4100, 3600, 3450],
+                    backgroundColor: 'rgba(20, 184, 166, 0.1)',
+                    borderColor: '#14b8a6',
+                    borderWidth: 3,
+                    pointBackgroundColor: '#14b8a6',
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 2,
+                    pointRadius: 6,
+                    tension: 0.4,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { 
+                        display: false 
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            color: '#e2e8f0'
+                        },
+                        ticks: {
+                            color: '#64748b'
+                        }
+                    },
+                    x: {
+                        grid: {
+                            color: '#e2e8f0'
+                        },
+                        ticks: {
+                            color: '#64748b'
+                        }
+                    }
+                }
+            }
+        });
+
+        // Category Chart
+        const categoryCtx = document.getElementById('categoryChart').getContext('2d');
+        const categoryChart = new Chart(categoryCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Food & Dining', 'Groceries', 'Transportation', 'Entertainment', 'Shopping', 'Other'],
+                datasets: [{
+                    label: 'Category',
+                    data: [4500, 3200, 2800, 2100, 1800, 1350],
+                    backgroundColor: [
+                        '#14b8a6', '#10b981', '#059669', '#047857', '#065f46', '#064e3b'
+                    ],
+                    borderWidth: 0,
+                    hoverOffset: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            color: '#64748b',
+                            padding: 20,
+                            usePointStyle: true
+                        }
+                    }
+                }
+            }
+        });
+
+        function exportData(format) {
+            const button = event.target.closest('button');
+            const originalText = button.innerHTML;
+            
+            // Show loading state
+            button.innerHTML = `<i class="fas fa-spinner fa-spin mr-2"></i>Exporting...`;
+            button.disabled = true;
+            
+            // Simulate export process
+            setTimeout(() => {
+                // Get current data
+                const data = {
+                    totalSpent: document.getElementById('total-spent').textContent,
+                    totalExpenses: document.getElementById('total-expenses').textContent,
+                    monthlyCount: document.getElementById('monthly-count').textContent,
+                    categoryCount: document.getElementById('category-count').textContent,
+                    topExpenses: [
+                        'Grocery Shopping - ₹2,500',
+                        'Restaurant Bill - ₹1,800',
+                        'Gas Station - ₹1,200',
+                        'Coffee Shop - ₹850',
+                        'Online Shopping - ₹750'
+                    ],
+                    monthlyData: monthlyChart.data.datasets[0].data,
+                    categoryData: categoryChart.data.datasets[0].data,
+                    categoryLabels: categoryChart.data.labels
+                };
+                
+                // Create and download file based on format
+                let content, filename, mimeType;
+                
+                switch(format) {
+                    case 'csv':
+                        content = generateCSV(data);
+                        filename = 'expense-analytics.csv';
+                        mimeType = 'text/csv';
+                        break;
+                    case 'excel':
+                        content = generateCSV(data); // Simplified - in real app would use proper Excel format
+                        filename = 'expense-analytics.csv';
+                        mimeType = 'text/csv';
+                        break;
+                    case 'pdf':
+                        // In real app, would generate PDF
+                        alert('PDF export functionality would be implemented with a PDF library like jsPDF');
+                        button.innerHTML = originalText;
+                        button.disabled = false;
+                        return;
+                }
+                
+                // Create and trigger download
+                const blob = new Blob([content], { type: mimeType });
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = filename;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(url);
+                
+                // Show success message
+                button.innerHTML = `<i class="fas fa-check mr-2"></i>Downloaded!`;
+                setTimeout(() => {
+                    button.innerHTML = originalText;
+                    button.disabled = false;
+                }, 2000);
+                
+            }, 1500);
+        }
+        
+        function generateCSV(data) {
+            let csv = 'Expense Analytics Report\n\n';
+            csv += 'Summary Statistics\n';
+            csv += `Total Spent,${data.totalSpent}\n`;
+            csv += `Total Expenses,${data.totalExpenses}\n`;
+            csv += `This Month,${data.monthlyCount}\n`;
+            csv += `Categories,${data.categoryCount}\n\n`;
+            
+            csv += 'Top 5 Expenses\n';
+            data.topExpenses.forEach(expense => {
+                csv += `${expense}\n`;
+            });
+            
+            csv += '\nMonthly Data\n';
+            csv += 'Month,Amount\n';
+            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'];
+            data.monthlyData.forEach((amount, index) => {
+                csv += `${months[index]},₹${amount}\n`;
+            });
+            
+            csv += '\nCategory Breakdown\n';
+            csv += 'Category,Amount\n';
+            data.categoryLabels.forEach((label, index) => {
+                csv += `${label},₹${data.categoryData[index]}\n`;
+            });
+            
+            return csv;
+        }
+
+        function logout() {
+            window.location.href = 'login.html';
+        }
+        document.addEventListener('DOMContentLoaded', function() {
+            // Handle navigation links
+            const navLinks = document.querySelectorAll('a[href="home.html"], a[href="expenses.html"]');
+            navLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                });
+            });
+            
+            // Add click handlers for top expenses
+            const expenseItems = document.querySelectorAll('#top-expenses > div');
+            expenseItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    const expenseName = this.querySelector('span').textContent;
+                    alert(`Viewing details for: ${expenseName}`);
+                });
+                item.style.cursor = 'pointer';
+            });
+        });
+
+        function updateStats() {
+            // Simulate real-time data updates with animation
+            const totalSpent = Math.floor(Math.random() * 5000) + 15000;
+            const totalExpenses = Math.floor(Math.random() * 10) + 20;
+            const monthlyCount = Math.floor(Math.random() * 5) + 5;
+            const categoryCount = Math.floor(Math.random() * 3) + 5;
+
+            // Animate number changes
+            animateValue('total-spent', `₹${totalSpent.toLocaleString()}`);
+            animateValue('total-expenses', totalExpenses);
+            animateValue('monthly-count', monthlyCount);
+            animateValue('category-count', categoryCount);
+        }
+        
+        function animateValue(elementId, newValue) {
+            const element = document.getElementById(elementId);
+            element.style.transform = 'scale(1.1)';
+            element.style.color = '#14b8a6';
+            
+            setTimeout(() => {
+                element.textContent = newValue;
+                element.style.transform = 'scale(1)';
+                element.style.color = '';
+            }, 200);
+        }
+
+        // Update stats every 30 seconds for demo
+        setInterval(updateStats, 30000);
+        
+        function refreshData() {
+            updateStats();
+            
+            // Update charts with new data
+            const newMonthlyData = Array.from({length: 6}, () => Math.floor(Math.random() * 2000) + 2000);
+            const newCategoryData = Array.from({length: 6}, () => Math.floor(Math.random() * 2000) + 1000);
+            
+            monthlyChart.data.datasets[0].data = newMonthlyData;
+            categoryChart.data.datasets[0].data = newCategoryData;
+            
+            monthlyChart.update();
+            categoryChart.update();
+            
+            // Show refresh feedback
+            const refreshBtn = event.target;
+            const originalText = refreshBtn.innerHTML;
+            refreshBtn.innerHTML = '<i class="fas fa-check mr-2"></i>Refreshed!';
+            setTimeout(() => {
+                refreshBtn.innerHTML = originalText;
+            }, 1500);
+        }
+    </script>
+</body>
+</html>

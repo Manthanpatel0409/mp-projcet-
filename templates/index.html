@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EXPENCE | Smart Expense Tracker</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            'inter': ['Inter', 'sans-serif'],
+          },
+          colors: {
+            'primary': {
+              50: '#f0fdfa',
+              100: '#ccfbf1',
+              500: '#14b8a6',
+              600: '#0d9488',
+              700: '#0f766e',
+              900: '#134e4a',
+            },
+            'secondary': {
+              400: '#fbbf24',
+              500: '#f59e0b',
+              600: '#d97706',
+            }
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="font-inter bg-gradient-to-br from-slate-50 to-primary-50 text-slate-800">
+  {% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <div class="max-w-4xl mx-auto mt-6">
+      {% for category, message in messages %}
+        <div class="p-4 rounded-lg text-center 
+                    {% if category == 'success' %}bg-green-100 text-green-800{% else %}bg-red-100 text-red-800{% endif %}">
+          {{ message }}
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}
+
+  <header class="sticky top-0 bg-white/80 backdrop-blur-md border-b border-slate-200/50 z-50">
+    <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-16">
+        <div class="flex items-center">
+          <div class="flex items-center space-x-2">
+            <i class="fas fa-receipt text-2xl text-teal-600"></i>
+            <span class="text-xl font-bold text-gray-800">OCR Expense Tracker</span>
+          </div>
+        </div>
+        
+        <div class="hidden md:block">
+          <div class="ml-10 flex items-baseline space-x-8">
+            <a href="#features" class="text-slate-600 hover:text-primary-600 px-3 py-2 text-sm font-medium transition-colors duration-200">Features</a>
+            <a href="#pricing" class="text-slate-600 hover:text-primary-600 px-3 py-2 text-sm font-medium transition-colors duration-200">Pricing</a>
+            <a href="#about" class="text-slate-600 hover:text-primary-600 px-3 py-2 text-sm font-medium transition-colors duration-200">About</a>
+            <a href="#contact" class="text-slate-600 hover:text-primary-600 px-3 py-2 text-sm font-medium transition-colors duration-200">Contact</a>
+          </div>
+        </div>
+        
+        <div class="flex items-center space-x-4">
+          <a href="{{ url_for('login') }}" class="text-primary-600 hover:text-primary-700 px-4 py-2 text-sm font-semibold transition-colors duration-200">
+            Login
+          </a>
+          <a href="{{ url_for('register') }}" class="bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 text-white px-6 py-2 rounded-full text-sm font-semibold shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105">
+            Get Started Free
+          </a>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <section class="relative overflow-hidden">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-28">
+      <div class="lg:grid lg:grid-cols-2 lg:gap-12 items-center">
+        <div class="mb-12 lg:mb-0">
+          <div class="inline-flex items-center px-4 py-2 rounded-full bg-secondary-400/10 text-secondary-600 text-sm font-medium mb-6">
+            <i class="fas fa-sparkles mr-2"></i>
+            AI-Powered Expense Tracking
+          </div>
+          
+          <h1 class="text-4xl lg:text-6xl font-bold text-slate-900 mb-6 leading-tight">
+            Smart Expense 
+            <span class="bg-gradient-to-r from-primary-600 via-primary-500 to-secondary-500 bg-clip-text text-transparent">
+              Tracking
+            </span>
+            Made Easy
+          </h1>
+          
+          <p class="text-xl text-slate-600 mb-8 leading-relaxed">
+            Transform your financial management with AI-powered insights, automatic categorization, and beautiful visualizations. Start your journey to smarter spending today.
+          </p>
+          
+          <div class="flex flex-col sm:flex-row gap-4">
+            <a href="{{ url_for('register') }}" class="bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 text-white px-8 py-4 rounded-full text-lg font-semibold shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105 text-center">
+              <i class="fas fa-rocket mr-2"></i>
+              Get Started Free
+            </a>
+            <a href="#features" class="border-2 border-primary-600 text-primary-600 hover:bg-primary-600 hover:text-white px-8 py-4 rounded-full text-lg font-semibold transition-all duration-300 text-center">
+              <i class="fas fa-play mr-2"></i>
+              See How It Works
+            </a>
+          </div>
+        </div>
+        
+        <div class="relative">
+          <div class="absolute inset-0 bg-gradient-to-r from-primary-400 to-secondary-400 rounded-3xl blur-3xl opacity-20 transform rotate-6"></div>
+          <img src="{{ url_for('static', filename='image/ocr_home.png') }}" alt="Expense Tracker Dashboard" >
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="features" class="py-20 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-16">
+        <h2 class="text-3xl lg:text-4xl font-bold text-slate-900 mb-4">
+          Why Choose 
+          <span class="bg-gradient-to-r from-primary-600 to-secondary-500 bg-clip-text text-transparent">
+            EXPENCE?
+          </span>
+        </h2>
+        <p class="text-xl text-slate-600 max-w-3xl mx-auto">
+          Discover powerful features designed to make expense tracking effortless and insightful
+        </p>
+      </div>
+      
+      <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div class="group bg-gradient-to-br from-white to-primary-50/50 p-8 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-primary-100/50">
+          <div class="w-16 h-16 bg-gradient-to-br from-primary-500 to-primary-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+            <i class="fas fa-receipt text-white text-2xl"></i>
+          </div>
+          <h3 class="text-xl font-bold text-slate-900 mb-3">Smart Tracking</h3>
+          <p class="text-slate-600 leading-relaxed">Automatically categorize your expenses with AI-powered OCR technology and machine learning.</p>
+        </div>
+        
+        <div class="group bg-gradient-to-br from-white to-secondary-50/50 p-8 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-secondary-100/50">
+          <div class="w-16 h-16 bg-gradient-to-br from-secondary-500 to-secondary-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+            <i class="fas fa-chart-pie text-white text-2xl"></i>
+          </div>
+          <h3 class="text-xl font-bold text-slate-900 mb-3">Insights & Reports</h3>
+          <p class="text-slate-600 leading-relaxed">Visualize spending patterns with interactive charts and comprehensive monthly breakdowns.</p>
+        </div>
+        
+        <div class="group bg-gradient-to-br from-white to-primary-50/50 p-8 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-primary-100/50">
+          <div class="w-16 h-16 bg-gradient-to-br from-primary-600 to-primary-700 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+            <i class="fas fa-cloud text-white text-2xl"></i>
+          </div>
+          <h3 class="text-xl font-bold text-slate-900 mb-3">Cloud Sync</h3>
+          <p class="text-slate-600 leading-relaxed">Access your data anytime, anywhere with secure cloud synchronization across all devices.</p>
+        </div>
+        
+        <div class="group bg-gradient-to-br from-white to-slate-50 p-8 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-slate-200/50">
+          <div class="w-16 h-16 bg-gradient-to-br from-slate-700 to-slate-800 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+            <i class="fas fa-lock text-white text-2xl"></i>
+          </div>
+          <h3 class="text-xl font-bold text-slate-900 mb-3">Data Security</h3>
+          <p class="text-slate-600 leading-relaxed">Your financial data is encrypted with bank-level security and fully protected at all times.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="pricing" class="py-20 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-16">
+        <h2 class="text-3xl lg:text-4xl font-bold text-slate-900 mb-4">
+          Simple, 
+          <span class="bg-gradient-to-r from-primary-600 to-secondary-500 bg-clip-text text-transparent">
+            Transparent Pricing
+          </span>
+        </h2>
+        <p class="text-xl text-slate-600 max-w-3xl mx-auto">
+          Choose the perfect plan for your expense tracking needs. Start free and upgrade as you grow.
+        </p>
+      </div>
+      
+      <div class="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+        <div class="bg-gradient-to-br from-white to-slate-50 p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border border-slate-200/50">
+          <div class="text-center mb-8">
+            <h3 class="text-2xl font-bold text-slate-900 mb-2">Free</h3>
+            <div class="text-4xl font-bold text-slate-900 mb-2">₹0</div>
+            <p class="text-slate-600">Perfect for getting started</p>
+          </div>
+          <ul class="space-y-4 mb-8">
+            <li class="flex items-center">
+              <i class="fas fa-check text-primary-600 mr-3"></i>
+              <span class="text-slate-600">Up to 50 expenses/month</span>
+            </li>
+            <li class="flex items-center">
+              <i class="fas fa-check text-primary-600 mr-3"></i>
+              <span class="text-slate-600">Basic categorization</span>
+            </li>
+            <li class="flex items-center">
+              <i class="fas fa-check text-primary-600 mr-3"></i>
+              <span class="text-slate-600">Monthly reports</span>
+            </li>
+            <li class="flex items-center">
+              <i class="fas fa-check text-primary-600 mr-3"></i>
+              <span class="text-slate-600">Mobile app access</span>
+            </li>
+          </ul>
+          <a href="{{ url_for('register') }}" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-800 py-3 px-6 rounded-full font-semibold text-center block transition-colors duration-200">
+            Get Started Free
+          </a>
+        </div>
+
+        <div class="bg-gradient-to-br from-primary-50 to-primary-100 p-8 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 border-2 border-primary-200 relative transform scale-105">
+          <div class="absolute -top-4 left-1/2 transform -translate-x-1/2">
+            <span class="bg-gradient-to-r from-primary-600 to-secondary-500 text-white px-4 py-1 rounded-full text-sm font-semibold">
+              Most Popular
+            </span>
+          </div>
+          <div class="text-center mb-8">
+            <h3 class="text-2xl font-bold text-slate-900 mb-2">Pro</h3>
+            <div class="text-4xl font-bold text-slate-900 mb-2">₹299</div>
+            <p class="text-slate-600">per month</p>
+          </div>
+          <ul class="space-y-4 mb-8">
+            <li class="flex items-center">
+              <i class="fas fa-check text-primary-600 mr-3"></i>
+              <span class="text-slate-600">Unlimited expenses</span>
+            </li>
+            <li class="flex items-center">
+              <i class="fas fa-check text-primary-600 mr-3"></i>
+              <span class="text-slate-600">AI-powered categorization</span>
+            </li>
+            <li class="flex items-center">
+              <i class="fas fa-check text-primary-600 mr-3"></i>
+              <span class="text-slate-600">Advanced analytics</span>
+            </li>
+            <li class="flex items-center">
+              <i class="fas fa-check text-primary-600 mr-3"></i>
+              <span class="text-slate-600">OCR receipt scanning</span>
+            </li>
+            <li class="flex items-center">
+              <i class="fas fa-check text-primary-600 mr-3"></i>
+              <span class="text-slate-600">Cloud sync</span>
+            </li>
+            <li class="flex items-center">
+              <i class="fas fa-check text-primary-600 mr-3"></i>
+              <span class="text-slate-600">Priority support</span>
+            </li>
+          </ul>
+          <a href="{{ url_for('register') }}" class="w-full bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 text-white py-3 px-6 rounded-full font-semibold text-center block transition-all duration-200 transform hover:scale-105">
+            Start Pro Trial
+          </a>
+        </div>
+
+        <div class="bg-gradient-to-br from-white to-secondary-50 p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border border-secondary-200/50">
+          <div class="text-center mb-8">
+            <h3 class="text-2xl font-bold text-slate-900 mb-2">Business</h3>
+            <div class="text-4xl font-bold text-slate-900 mb-2">₹999</div>
+            <p class="text-slate-600">per month</p>
+          </div>
+          <ul class="space-y-4 mb-8">
+            <li class="flex items-center">
+              <i class="fas fa-check text-secondary-600 mr-3"></i>
+              <span class="text-slate-600">Everything in Pro</span>
+            </li>
+            <li class="flex items-center">
+              <i class="fas fa-check text-secondary-600 mr-3"></i>
+              <span class="text-slate-600">Team collaboration</span>
+            </li>
+            <li class="flex items-center">
+              <i class="fas fa-check text-secondary-600 mr-3"></i>
+              <span class="text-slate-600">Custom categories</span>
+            </li>
+            <li class="flex items-center">
+              <i class="fas fa-check text-secondary-600 mr-3"></i>
+              <span class="text-slate-600">API access</span>
+            </li>
+            <li class="flex items-center">
+              <i class="fas fa-check text-secondary-600 mr-3"></i>
+              <span class="text-slate-600">Advanced integrations</span>
+            </li>
+            <li class="flex items-center">
+              <i class="fas fa-check text-secondary-600 mr-3"></i>
+              <span class="text-slate-600">Dedicated support</span>
+            </li>
+          </ul>
+          <a href="{{ url_for('register') }}" class="w-full bg-gradient-to-r from-secondary-500 to-secondary-600 hover:from-secondary-600 hover:to-secondary-700 text-white py-3 px-6 rounded-full font-semibold text-center block transition-all duration-200 transform hover:scale-105">
+            Contact Sales
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="py-20 bg-gradient-to-br from-slate-50 to-primary-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-16">
+        <h2 class="text-3xl lg:text-4xl font-bold text-slate-900 mb-4">
+          Trusted by 
+          <span class="bg-gradient-to-r from-primary-600 to-secondary-500 bg-clip-text text-transparent">
+            Thousands
+          </span>
+        </h2>
+        <p class="text-xl text-slate-600">See what our users are saying about EXPENCE</p>
+      </div>
+      
+      <div class="grid md:grid-cols-3 gap-8">
+        <div class="bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300 border border-primary-100/50">
+          <div class="flex items-center mb-4">
+            <div class="flex text-secondary-400">
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+            </div>
+          </div>
+          <p class="text-slate-600 mb-6 italic leading-relaxed">"This app has completely transformed how I manage my money. The AI categorization is incredibly accurate and saves me so much time!"</p>
+          <div class="flex items-center">
+            <div class="w-12 h-12 bg-gradient-to-br from-primary-400 to-primary-500 rounded-full flex items-center justify-center text-white font-bold mr-4">P</div>
+            <div>
+              <h4 class="font-semibold text-slate-900">Priya Sharma</h4>
+              <p class="text-slate-500 text-sm">Student</p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300 border border-secondary-100/50">
+          <div class="flex items-center mb-4">
+            <div class="flex text-secondary-400">
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+            </div>
+          </div>
+          <p class="text-slate-600 mb-6 italic leading-relaxed">"The insights and reports feature is amazing! It helps me stay on top of my budget and identify spending patterns I never noticed before."</p>
+          <div class="flex items-center">
+            <div class="w-12 h-12 bg-gradient-to-br from-secondary-400 to-secondary-500 rounded-full flex items-center justify-center text-white font-bold mr-4">R</div>
+            <div>
+              <h4 class="font-semibold text-slate-900">Rahul Patel</h4>
+              <p class="text-slate-500 text-sm">Freelancer</p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300 border border-primary-100/50">
+          <div class="flex items-center mb-4">
+            <div class="flex text-secondary-400">
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+            </div>
+          </div>
+          <p class="text-slate-600 mb-6 italic leading-relaxed">"The cloud sync is perfect for my lifestyle. I can track expenses on my phone and review reports on my laptop seamlessly."</p>
+          <div class="flex items-center">
+            <div class="w-12 h-12 bg-gradient-to-br from-primary-500 to-primary-600 rounded-full flex items-center justify-center text-white font-bold mr-4">S</div>
+            <div>
+              <h4 class="font-semibold text-slate-900">Sneha Gupta</h4>
+              <p class="text-slate-500 text-sm">Professional</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="about" class="py-20 bg-gradient-to-br from-slate-50 to-primary-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid lg:grid-cols-2 gap-12 items-center">
+        <div>
+          <h2 class="text-3xl lg:text-4xl font-bold text-slate-900 mb-6">
+            About 
+            <span class="bg-gradient-to-r from-primary-600 to-secondary-500 bg-clip-text text-transparent">
+              EXPENCE
+            </span>
+          </h2>
+          <p class="text-lg text-slate-600 mb-6 leading-relaxed">
+            EXPENCE was born from a simple idea: expense tracking shouldn't be complicated. We believe that managing your finances should be as easy as taking a photo of your receipt.
+          </p>
+          <p class="text-lg text-slate-600 mb-8 leading-relaxed">
+            Our team of financial experts and AI engineers have created a platform that not only tracks your expenses but provides intelligent insights to help you make better financial decisions. With over 50,000 users worldwide, we're committed to making financial management accessible to everyone.
+          </p>
+          
+          <div class="grid grid-cols-2 gap-6 mb-8">
+            <div class="text-center">
+              <div class="text-3xl font-bold text-primary-600 mb-2">50K+</div>
+              <div class="text-slate-600">Active Users</div>
+            </div>
+            <div class="text-center">
+              <div class="text-3xl font-bold text-primary-600 mb-2">1M+</div>
+              <div class="text-slate-600">Expenses Tracked</div>
+            </div>
+            <div class="text-center">
+              <div class="text-3xl font-bold text-primary-600 mb-2">99.9%</div>
+              <div class="text-slate-600">Uptime</div>
+            </div>
+            <div class="text-center">
+              <div class="text-3xl font-bold text-primary-600 mb-2">24/7</div>
+              <div class="text-slate-600">Support</div>
+            </div>
+          </div>
+
+          <div class="flex flex-col sm:flex-row gap-4">
+            <a href="{{ url_for('register') }}" class="bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 text-white px-6 py-3 rounded-full font-semibold text-center transition-all duration-200 transform hover:scale-105">
+              <i class="fas fa-rocket mr-2"></i>
+              Start Your Journey
+            </a>
+            <a href="#features" class="border-2 border-primary-600 text-primary-600 hover:bg-primary-600 hover:text-white px-6 py-3 rounded-full font-semibold text-center transition-all duration-200">
+              <i class="fas fa-info-circle mr-2"></i>
+              Learn More
+            </a>
+          </div>
+        </div>
+        
+        <div class="relative">
+          <div class="absolute inset-0 bg-gradient-to-r from-primary-400 to-secondary-400 rounded-3xl blur-3xl opacity-20 transform -rotate-6"></div>
+          <img src="{{ url_for('static', filename='image/About Us - Edited.png') }}" alt="About EXPENCE">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact" class="py-20 bg-white">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-16">
+        <h2 class="text-3xl lg:text-4xl font-bold text-slate-900 mb-4">
+          Get in 
+          <span class="bg-gradient-to-r from-primary-600 to-secondary-500 bg-clip-text text-transparent">
+            Touch
+          </span>
+        </h2>
+        <p class="text-xl text-slate-600 max-w-2xl mx-auto">
+          Have questions about EXPENCE? We'd love to hear from you. Send us a message and we'll respond as soon as possible.
+        </p>
+      </div>
+      
+      <div class="bg-gradient-to-br from-white to-primary-50/30 p-8 lg:p-12 rounded-3xl shadow-xl border border-primary-100/50">
+<form class="space-y-6" method="POST" action="{{ url_for('contact') }}">
+          <div class="grid md:grid-cols-2 gap-6">
+            <div>
+              <label for="name" class="block text-sm font-semibold text-slate-700 mb-2">
+                <i class="fas fa-user mr-2 text-primary-600"></i>
+                Full Name
+              </label>
+              <input 
+                type="text" 
+                id="name" 
+                name="name" 
+                required
+                class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-200 transition-all duration-200 bg-white/80 backdrop-blur-sm"
+                placeholder="Enter your full name"
+              >
+            </div>
+            <div>
+              <label for="email" class="block text-sm font-semibold text-slate-700 mb-2">
+                <i class="fas fa-envelope mr-2 text-primary-600"></i>
+                Email Address
+              </label>
+              <input 
+                type="email" 
+                id="email" 
+                name="email" 
+                required
+                class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-200 transition-all duration-200 bg-white/80 backdrop-blur-sm"
+                placeholder="Enter your email address"
+              >
+            </div>
+          </div>
+          
+          <div>
+            <label for="subject" class="block text-sm font-semibold text-slate-700 mb-2">
+              <i class="fas fa-tag mr-2 text-primary-600"></i>
+              Subject
+            </label>
+            <select 
+              id="subject" 
+              name="subject" 
+              required
+              class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-200 transition-all duration-200 bg-white/80 backdrop-blur-sm"
+            >
+              <option value="">Select a subject</option>
+              <option value="general">General Inquiry</option>
+              <option value="support">Technical Support</option>
+              <option value="billing">Billing Question</option>
+              <option value="feature">Feature Request</option>
+              <option value="partnership">Partnership Opportunity</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+          
+          <div>
+            <label for="message" class="block text-sm font-semibold text-slate-700 mb-2">
+              <i class="fas fa-comment mr-2 text-primary-600"></i>
+              Message
+            </label>
+            <textarea 
+              id="message" 
+              name="message" 
+              rows="6" 
+              required
+              class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-200 transition-all duration-200 bg-white/80 backdrop-blur-sm resize-none"
+              placeholder="Tell us how we can help you..."
+            ></textarea>
+          </div>
+          
+          <div class="flex items-center">
+            <input 
+              type="checkbox" 
+              id="newsletter" 
+              name="newsletter"
+              class="w-4 h-4 text-primary-600 bg-white border-slate-300 rounded focus:ring-primary-500 focus:ring-2"
+            >
+            <label for="newsletter" class="ml-3 text-sm text-slate-600">
+              I'd like to receive updates about new features and product news
+            </label>
+          </div>
+          
+          <div class="text-center">
+            <button 
+              type="submit"
+              class="bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 text-white px-8 py-4 rounded-full text-lg font-semibold shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105 inline-flex items-center"
+            >
+              <i class="fas fa-paper-plane mr-3"></i>
+              Send Message
+            </button>
+          </div>
+        </form>
+        
+        <div class="mt-12 pt-8 border-t border-slate-200/50">
+          <div class="grid md:grid-cols-3 gap-8 text-center">
+            <div class="group">
+              <div class="w-12 h-12 bg-gradient-to-br from-primary-500 to-primary-600 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
+                <i class="fas fa-envelope text-white text-lg"></i>
+              </div>
+              <h4 class="font-semibold text-slate-900 mb-2">Email Us</h4>
+              <p class="text-slate-600">support@expence.com</p>
+            </div>
+            <div class="group">
+              <div class="w-12 h-12 bg-gradient-to-br from-secondary-500 to-secondary-600 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
+                <i class="fas fa-phone text-white text-lg"></i>
+              </div>
+              <h4 class="font-semibold text-slate-900 mb-2">Call Us</h4>
+              <p class="text-slate-600">+91 98765 43210</p>
+            </div>
+            <div class="group">
+              <div class="w-12 h-12 bg-gradient-to-br from-primary-600 to-primary-700 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
+                <i class="fas fa-clock text-white text-lg"></i>
+              </div>
+              <h4 class="font-semibold text-slate-900 mb-2">Support Hours</h4>
+              <p class="text-slate-600">24/7 Available</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="py-20 bg-gradient-to-r from-primary-600 via-primary-700 to-secondary-600 relative overflow-hidden">
+    <div class="absolute inset-0 bg-black/10"></div>
+    <div class="relative max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8">
+      <h2 class="text-3xl lg:text-5xl font-bold text-white mb-6">
+        Ready to simplify your expenses?
+      </h2>
+      <p class="text-xl text-primary-100 mb-8 leading-relaxed">
+        Join thousands of users already managing their finances smarter with EXPENCE. Start your free trial today and experience the difference.
+      </p>
+      <a href="{{ url_for('register') }}" class="inline-flex items-center bg-white text-primary-700 px-8 py-4 rounded-full text-lg font-bold shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105">
+        <i class="fas fa-rocket mr-3"></i>
+        Start Free Today
+        <i class="fas fa-arrow-right ml-3"></i>
+      </a>
+    </div>
+  </section>
+
+  <footer class="bg-slate-900 text-slate-300 py-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <div class="text-2xl font-bold bg-gradient-to-r from-primary-400 to-secondary-400 bg-clip-text text-transparent mb-4">
+        EXPENCE
+      </div>
+      <p class="text-slate-400">© 2024 EXPENCE. All rights reserved. Making expense tracking effortless.</p>
+    </div>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Features | OCR Expense Tracker</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'teal': {
+              50: '#f0fdfa',
+              500: '#14b8a6',
+              600: '#0d9488',
+              700: '#0f766e',
+            },
+            'emerald': {
+              500: '#10b981',
+              600: '#059669',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    .glass-effect {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    .feature-icon {
+      width: 60px;
+      height: 60px;
+      margin: 0 auto 16px;
+      background: linear-gradient(135deg, #14b8a6, #10b981);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 24px;
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-teal-600 via-emerald-600 to-teal-700">
+
+  <!-- Navbar -->
+  <nav class="glass-effect sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-16">
+        <div class="flex items-center">
+          <h1 class="text-2xl font-bold text-white">EXPENCE</h1>
+        </div>
+        <div class="hidden md:block">
+          <div class="ml-10 flex items-baseline space-x-4">
+           
+           
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Features Section -->
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div class="text-center mb-16">
+      <h1 class="text-5xl font-bold text-white mb-4">Powerful Features</h1>
+      <p class="text-xl text-teal-100 max-w-3xl mx-auto">Discover how EXPENCE makes expense tracking effortless with cutting-edge OCR technology and intelligent analytics</p>
+    </div>
+
+    <!-- Feature Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <div class="glass-effect rounded-2xl p-8 text-center hover:scale-105 transition-all duration-300 group">
+        <div class="feature-icon group-hover:scale-110 transition-transform duration-300">📄</div>
+        <h3 class="text-2xl font-bold text-white mb-4">OCR Receipt Upload</h3>
+        <p class="text-teal-100 leading-relaxed">Scan and upload receipts instantly. Our advanced OCR engine reads expense data automatically with 99% accuracy.</p>
+      </div>
+
+      <div class="glass-effect rounded-2xl p-8 text-center hover:scale-105 transition-all duration-300 group">
+        <div class="feature-icon group-hover:scale-110 transition-transform duration-300">📊</div>
+        <h3 class="text-2xl font-bold text-white mb-4">Category Breakdown</h3>
+        <p class="text-teal-100 leading-relaxed">Track where your money goes with smart categorization – groceries, bills, travel, entertainment, and more.</p>
+      </div>
+
+      <div class="glass-effect rounded-2xl p-8 text-center hover:scale-105 transition-all duration-300 group">
+        <div class="feature-icon group-hover:scale-110 transition-transform duration-300">📈</div>
+        <h3 class="text-2xl font-bold text-white mb-4">Visual Analytics</h3>
+        <p class="text-teal-100 leading-relaxed">Interactive charts and graphs show your monthly and category-wise spending patterns with beautiful visualizations.</p>
+      </div>
+
+      <div class="glass-effect rounded-2xl p-8 text-center hover:scale-105 transition-all duration-300 group">
+        <div class="feature-icon group-hover:scale-110 transition-transform duration-300">✏️</div>
+        <h3 class="text-2xl font-bold text-white mb-4">Edit & Delete Expenses</h3>
+        <p class="text-teal-100 leading-relaxed">Manage your records easily by editing or removing incorrect entries with our intuitive interface.</p>
+      </div>
+
+      <div class="glass-effect rounded-2xl p-8 text-center hover:scale-105 transition-all duration-300 group">
+        <div class="feature-icon group-hover:scale-110 transition-transform duration-300">🌙</div>
+        <h3 class="text-2xl font-bold text-white mb-4">Dark/Light Mode</h3>
+        <p class="text-teal-100 leading-relaxed">Switch themes for a comfortable viewing experience anytime with our elegant dark and light mode options.</p>
+      </div>
+
+      <div class="glass-effect rounded-2xl p-8 text-center hover:scale-105 transition-all duration-300 group">
+        <div class="feature-icon group-hover:scale-110 transition-transform duration-300">📱</div>
+        <h3 class="text-2xl font-bold text-white mb-4">Mobile Responsive</h3>
+        <p class="text-teal-100 leading-relaxed">Track and view your expenses on the go with a fully responsive UI that works perfectly on all devices.</p>
+      </div>
+    </div>
+
+    <!-- Call to Action -->
+    <div class="text-center mt-16">
+      <div class="glass-effect rounded-2xl p-8 max-w-2xl mx-auto">
+        <h2 class="text-3xl font-bold text-white mb-4">Ready to Get Started?</h2>
+        <p class="text-teal-100 mb-6">Join thousands of users who are already managing their expenses smarter with EXPENCE.</p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+          <a href="{{ url_for('register') }}" class="bg-white text-teal-600 px-8 py-3 rounded-full font-semibold hover:bg-teal-50 transition-colors">Sign Up Free</a>
+          <a href="{{ url_for('home') }}" class="border-2 border-white text-white px-8 py-3 rounded-full font-semibold hover:bg-white hover:text-teal-600 transition-colors">View Demo</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>

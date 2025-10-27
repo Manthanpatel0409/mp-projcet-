@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Expenses - OCR Tracker</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#14b8a6',
+                        secondary: '#10b981',
+                        accent: '#f59e0b'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gradient-to-br from-teal-50 via-emerald-50 to-cyan-50 min-h-screen">
+    <!-- Header -->
+    <header class="bg-white/80 backdrop-blur-md shadow-lg sticky top-0 z-50 border-b border-teal-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center py-4">
+                <a href="/" class="flex items-center space-x-3 text-primary hover:text-secondary transition-colors">
+                    <i class="fas fa-list text-3xl"></i>
+                    <span class="text-2xl font-bold">All Expenses</span>
+                </a>
+                <nav class="hidden md:flex items-center space-x-4">
+    <a href="{{ url_for('home') }}" 
+       class="bg-gradient-to-r from-primary to-secondary text-white px-6 py-2 rounded-full hover:shadow-lg transition-all duration-300 flex items-center space-x-2">
+        <i class="fas fa-home"></i>
+        <span>Home</span>
+    </a>
+
+    <a href="{{ url_for('analytics') }}" 
+       class="bg-gradient-to-r from-primary to-secondary text-white px-6 py-2 rounded-full hover:shadow-lg transition-all duration-300 flex items-center space-x-2">
+        <i class="fas fa-chart-line"></i>
+        <span>Analytics</span>
+    </a>
+
+    <a href="{{ url_for('logout') }}" 
+       class="bg-gradient-to-r from-red-500 to-red-600 text-white px-6 py-2 rounded-full hover:shadow-lg transition-all duration-300 flex items-center space-x-2">
+        <i class="fas fa-sign-out-alt"></i>
+        <span>Logout</span>
+    </a>
+</nav>
+
+                <!-- Mobile menu button -->
+                <button id="mobile-menu-btn" class="md:hidden text-primary hover:text-secondary">
+                    <i class="fas fa-bars text-2xl"></i>
+                </button>
+            </div>
+            <!-- Mobile menu -->
+            <div id="mobile-menu" class="hidden md:hidden pb-4 space-y-2">
+                <a href="dashboard.html" class="block bg-gradient-to-r from-primary to-secondary text-white px-4 py-2 rounded-lg">
+                    <i class="fas fa-home mr-2"></i>Home
+                </a>
+                <a href="analytics.html" class="block bg-gradient-to-r from-primary to-secondary text-white px-4 py-2 rounded-lg">
+                    <i class="fas fa-chart-line mr-2"></i>Analytics
+                </a>
+                <button onclick="logout()" class="block w-full text-left bg-gradient-to-r from-red-500 to-red-600 text-white px-4 py-2 rounded-lg">
+                    <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Page Header -->
+        <div class="text-center mb-12">
+            <h1 class="text-4xl md:text-5xl font-bold text-gray-800 mb-4">All Expenses</h1>
+            <p class="text-xl text-gray-600 max-w-2xl mx-auto">Search and view your uploaded expense records with advanced filtering options</p>
+        </div>
+
+        <!-- Search Form -->
+        <div class="bg-white/70 backdrop-blur-md rounded-2xl p-8 shadow-xl border border-teal-100 mb-8">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-6 flex items-center">
+                <i class="fas fa-search text-primary mr-3"></i>
+                Search Expenses
+            </h2>
+            <form id="search-form" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div>
+                    <label for="name" class="block text-sm font-medium text-gray-700 mb-2">Search by Name</label>
+                    <input type="text" id="name" name="name" class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-primary focus:ring-4 focus:ring-primary/20 transition-all duration-300" placeholder="Enter expense name">
+                </div>
+                <div>
+                    <label for="date" class="block text-sm font-medium text-gray-700 mb-2">Search by Date</label>
+                    <input type="date" id="date" name="date" class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-primary focus:ring-4 focus:ring-primary/20 transition-all duration-300">
+                </div>
+                <div class="flex items-end">
+                    <button type="submit" class="w-full bg-gradient-to-r from-primary to-secondary text-white px-6 py-3 rounded-xl hover:shadow-lg transition-all duration-300 flex items-center justify-center space-x-2">
+                        <i class="fas fa-search"></i>
+                        <span>Search</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Expenses Table -->
+        <div class="bg-white/70 backdrop-blur-md rounded-2xl shadow-xl border border-teal-100 overflow-hidden">
+            <div class="p-6 border-b border-gray-200">
+                <h2 class="text-2xl font-semibold text-gray-800 flex items-center">
+                    <i class="fas fa-table text-primary mr-3"></i>
+                    Expense Records
+                </h2>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <thead class="bg-gradient-to-r from-teal-50 to-emerald-50">
+                        <tr>
+                            <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">ID</th>
+                            <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Expense Name</th>
+                            <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Date</th>
+                            <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Category</th>
+                            <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Amount</th>
+                            <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Raw Text</th>
+                            <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="expenses-tbody" class="divide-y divide-gray-100">
+    {% if expenses %}
+        {% for exp in expenses %}
+        <tr class="hover:bg-teal-50/50 transition-colors">
+            <td class="px-6 py-4 text-sm text-gray-600">{{ exp.id }}</td>
+            <td class="px-6 py-4 text-sm font-medium text-gray-800">{{ exp.name }}</td>
+            <td class="px-6 py-4 text-sm text-gray-600">{{ exp.date.strftime('%Y-%m-%d') }}</td>
+            <td class="px-6 py-4">
+                <span class="inline-flex px-3 py-1 text-xs font-medium bg-blue-100 text-blue-800 rounded-full">
+                    {{ exp.category or 'Uncategorized' }}
+                </span>
+            </td>
+            <td class="px-6 py-4 text-sm font-semibold text-primary">₹{{ "%.2f"|format(exp.amount) }}</td>
+            <td class="px-6 py-4 text-sm text-gray-500 max-w-xs truncate">{{ exp.text or '-' }}</td>
+            <td class="px-6 py-4">
+                <div class="flex space-x-2">
+                    <form action="{{ url_for('edit_expense', expense_id=exp.id) }}" method="get">
+                        <button 
+    type="button"
+    onclick="openEditModal('{{ exp.id }}', '{{ exp.name }}', '{{ exp.amount }}', '{{ exp.category }}')"
+    class="text-primary hover:text-secondary p-2 rounded-lg hover:bg-teal-50 transition-colors"
+    title="Edit">
+    <i class="fas fa-edit"></i>
+</button>
+                    </form>
+                    <form action="{{ url_for('delete_expense', expense_id=exp.id) }}" method="post" onsubmit="return confirm('Are you sure you want to delete this expense?');">
+                        <button type="submit" class="text-red-500 hover:text-red-700 p-2 rounded-lg hover:bg-red-50 transition-colors" title="Delete">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </form>
+                </div>
+            </td>
+        </tr>
+        {% endfor %}
+    {% else %}
+        <tr>
+            <td colspan="7" class="text-center py-8 text-gray-500">No expenses found.</td>
+        </tr>
+    {% endif %}
+</tbody>
+
+                </table>
+            </div>
+            <div id="no-data" class="hidden text-center py-16">
+                <i class="fas fa-inbox text-6xl text-gray-300 mb-4"></i>
+                <p class="text-xl text-gray-500 mb-2">No expenses found</p>
+                <p class="text-gray-400">Try uploading some receipts to get started!</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- Edit Modal -->
+    <div id="edit-modal" class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl p-8 max-w-md w-full shadow-2xl">
+            <h3 class="text-2xl font-bold text-gray-800 mb-6">Edit Expense</h3>
+            <form id="edit-form" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Expense Name</label>
+                    <input type="text" id="edit-name" class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-primary focus:ring-4 focus:ring-primary/20">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Amount</label>
+                    <input type="number" id="edit-amount" class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-primary focus:ring-4 focus:ring-primary/20">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Category</label>
+                    <select id="edit-category" class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-primary focus:ring-4 focus:ring-primary/20">
+                        <option>Food & Dining</option>
+                        <option>Groceries</option>
+                        <option>Transportation</option>
+                        <option>Entertainment</option>
+                        <option>Shopping</option>
+                        <option>Other</option>
+                    </select>
+                </div>
+                <div class="flex space-x-4 pt-4">
+                    <button type="submit" class="flex-1 bg-gradient-to-r from-primary to-secondary text-white py-3 rounded-xl hover:shadow-lg transition-all duration-300">
+                        Save Changes
+                    </button>
+                    <button type="button" onclick="closeEditModal()" class="flex-1 bg-gray-200 text-gray-700 py-3 rounded-xl hover:bg-gray-300 transition-colors">
+                        Cancel
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Mobile menu toggle
+        document.getElementById('mobile-menu-btn').addEventListener('click', function() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        });
+
+        // Search functionality
+        document.getElementById('search-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const name = document.getElementById('name').value;
+            const date = document.getElementById('date').value;
+            
+            filterExpenses(name, date);
+        });
+
+        function filterExpenses(name, date) {
+            const rows = document.querySelectorAll('#expenses-tbody tr');
+            let visibleCount = 0;
+            
+            rows.forEach(row => {
+                const expenseName = row.cells[1].textContent.toLowerCase();
+                const expenseDate = row.cells[2].textContent;
+                
+                const nameMatch = !name || expenseName.includes(name.toLowerCase());
+                const dateMatch = !date || expenseDate === date;
+                
+                if (nameMatch && dateMatch) {
+                    row.style.display = '';
+                    visibleCount++;
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+            
+            // Show/hide no data message
+            const noData = document.getElementById('no-data');
+            const tbody = document.getElementById('expenses-tbody');
+            if (visibleCount === 0) {
+                tbody.style.display = 'none';
+                noData.classList.remove('hidden');
+            } else {
+                tbody.style.display = '';
+                noData.classList.add('hidden');
+            }
+        }
+
+        function editExpense(id) {
+            document.getElementById('edit-modal').classList.remove('hidden');
+            // Pre-fill form with current data (in real app, fetch from server)
+            document.getElementById('edit-name').value = 'Sample Expense';
+            document.getElementById('edit-amount').value = '250';
+            document.getElementById('edit-category').value = 'Food & Dining';
+        }
+
+        function closeEditModal() {
+            document.getElementById('edit-modal').classList.add('hidden');
+        }
+
+        function deleteExpense(id) {
+            if (confirm('Are you sure you want to delete this expense?')) {
+                // In real app, make API call to delete
+                alert('Expense deleted successfully!');
+                // Remove row from table
+                event.target.closest('tr').remove();
+            }
+        }
+
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                alert('Logging out...');
+                // In real app, redirect to login page
+            }
+        }
+
+        // Edit form submission
+        document.getElementById('edit-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('Expense updated successfully!');
+            closeEditModal();
+        });
+        function openEditModal(id, name, amount, category) {
+    // Show modal
+    const modal = document.getElementById('edit-modal');
+    modal.classList.remove('hidden');
+
+    // Store expense ID (to send when saving)
+    modal.dataset.expenseId = id;
+
+    // Fill input fields
+    document.getElementById('edit-name').value = name;
+    document.getElementById('edit-amount').value = amount;
+    document.getElementById('edit-category').value = category;
+}
+
+// Update form submission to actually call Flask endpoint
+document.getElementById('edit-form').addEventListener('submit', async function (e) {
+    e.preventDefault();
+
+    const modal = document.getElementById('edit-modal');
+    const expenseId = modal.dataset.expenseId;
+
+    const formData = new FormData();
+    formData.append('name', document.getElementById('edit-name').value);
+    formData.append('amount', document.getElementById('edit-amount').value);
+    formData.append('category', document.getElementById('edit-category').value);
+
+    try {
+        const response = await fetch(`/edit_expense/${expenseId}`, {
+            method: 'POST',
+            body: formData
+        });
+
+        if (response.ok) {
+            alert('Expense updated successfully!');
+            // ✅ Update table row instantly without reload
+            const row = document.querySelector(`#exp-${expenseId}`);
+            if (row) {
+                row.querySelector('.exp-name').textContent = formData.get('name');
+                row.querySelector('.exp-amount').textContent = '₹' + parseFloat(formData.get('amount')).toFixed(2);
+                row.querySelector('.exp-category').textContent = formData.get('category');
+            }
+        } else {
+            alert('Error updating expense!');
+        }
+    } catch (err) {
+        console.error(err);
+        alert('Something went wrong.');
+    }
+
+    closeEditModal();
+});
+
+
+    </script>
+</body>
+</html>
