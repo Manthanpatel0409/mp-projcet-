@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile - OCR Tracker</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .btn-primary {
+            background: linear-gradient(135deg, #0d9488 0%, #059669 100%);
+            transition: all 0.3s ease;
+        }
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #0f766e 0%, #047857 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(13, 148, 136, 0.3);
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-teal-50 via-emerald-50 to-cyan-50 min-h-screen">
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div id="flash-container" class="fixed top-5 right-5 z-50 space-y-3 w-full max-w-sm" style="z-index: 1000;">
+          {% for category, message in messages %}
+            <div class="toast-message p-4 rounded-lg shadow-lg flex items-center space-x-3 
+                        {% if category == 'success' %}bg-green-500 text-white
+                        {% else %}bg-red-500 text-white{% endif %}"
+                 style="opacity: 1; transition: opacity 0.5s ease;">
+              
+              {% if category == 'success' %}
+                <i class="fas fa-check-circle text-xl"></i>
+              {% else %}
+                <i class="fas fa-times-circle text-xl"></i>
+              {% endif %}
+              
+              <span class="flex-1">{{ message }}</span>
+              
+              <button onclick="this.parentElement.style.opacity='0'; setTimeout(() => this.parentElement.remove(), 500);" class="text-white/70 hover:text-white text-2xl font-bold">&times;</button>
+            </div>
+          {% endfor %}
+        </div>
+        <script>
+          document.addEventListener('DOMContentLoaded', (event) => {
+            const toasts = document.querySelectorAll('.toast-message');
+            toasts.forEach((toast, index) => {
+              setTimeout(() => {
+                if (toast) {
+                  toast.style.opacity = '0';
+                  setTimeout(() => toast.remove(), 500);
+                }
+              }, 5000 + (index * 500));
+            });
+          });
+        </script>
+      {% endif %}
+    {% endwith %}
+
+    <header class="bg-white/80 backdrop-blur-md shadow-lg sticky top-0 z-50 border-b border-teal-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center py-4">
+                <a href="{{ url_for('main.home') }}" class="flex items-center space-x-3 text-primary hover:text-secondary transition-colors">
+                    <i class="fas fa-user-circle text-3xl"></i>
+                    <span class="text-2xl font-bold">My Profile</span>
+                </a>
+                <nav class="hidden md:flex items-center space-x-4">
+                    <a href="{{ url_for('main.home') }}" 
+                       class="bg-gradient-to-r from-primary to-secondary text-white px-6 py-2 rounded-full hover:shadow-lg transition-all duration-300 flex items-center space-x-2">
+                        <i class="fas fa-home"></i>
+                        <span>Home</span>
+                    </a>
+                    <a href="{{ url_for('main.logout') }}" 
+                       class="bg-gradient-to-r from-red-500 to-red-600 text-white px-6 py-2 rounded-full hover:shadow-lg transition-all duration-300 flex items-center space-x-2">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span>Logout</span>
+                    </a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            
+            <div class="bg-white/70 backdrop-blur-md rounded-2xl p-8 shadow-xl border border-teal-100">
+                
+                <div class="text-center mb-6">
+                    <img src="{{ url_for('static', filename='profile_pics/' + user.profile_image) }}" alt="Profile Picture" 
+                         class="w-32 h-32 rounded-full mx-auto mb-4 border-4 border-teal-500 shadow-lg">
+                    
+                    <form method="POST" action="{{ url_for('main.profile') }}" enctype="multipart/form-data" class="space-y-2">
+                        <input type="hidden" name="action" value="change_photo">
+                        <div>
+                            <label for="profile_pic" class="block text-sm font-medium text-gray-700 mb-2">Change Photo</label>
+                            <input type="file" name="profile_pic" id="profile_pic" accept="image/png, image/jpeg" 
+                                   class="w-full text-sm text-gray-500
+                                          file:mr-4 file:py-2 file:px-4
+                                          file:rounded-full file:border-0
+                                          file:text-sm file:font-semibold
+                                          file:bg-teal-50 file:text-teal-700
+                                          hover:file:bg-teal-100">
+                        </div>
+                        <button type="submit" class="w-full btn-primary text-white px-4 py-2 rounded-xl text-sm">
+                            Upload New Photo
+                        </button>
+                    </form>
+                </div>
+                
+                <hr class="my-6 border-gray-200">
+
+                <h2 class="text-2xl font-semibold text-gray-800 mb-6 flex items-center">
+                    <i class="fas fa-user-edit text-primary mr-3"></i>
+                    Update Your Details
+                </h2>
+                
+                <form method="POST" action="{{ url_for('main.profile') }}" class="space-y-4">
+                    <input type="hidden" name="action" value="update_details">
+                    <div>
+                        <label for="first_name" class="block text-sm font-medium text-gray-700 mb-2">First Name</label>
+                        <input type="text" id="first_name" name="first_name" value="{{ user.first_name }}" required 
+                               class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-primary focus:ring-4 focus:ring-primary/20">
+                    </div>
+                    <div>
+                        <label for="last_name" class="block text-sm font-medium text-gray-700 mb-2">Last Name</label>
+                        <input type="text" id="last_name" name="last_name" value="{{ user.last_name or '' }}"
+                               class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-primary focus:ring-4 focus:ring-primary/20">
+                    </div>
+                    <div>
+                        <label for="email" class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                        <input type="email" id="email" name="email" value="{{ user.email }}" disabled
+                               class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl bg-gray-100 text-gray-500 cursor-not-allowed">
+                    </div>
+                    <button type="submit" class="w-full btn-primary text-white px-6 py-3 rounded-xl hover:shadow-lg transition-all duration-300">
+                        Save Name Changes
+                    </button>
+                </form>
+            </div>
+
+            <div class="bg-white/70 backdrop-blur-md rounded-2xl p-8 shadow-xl border border-teal-100">
+                <h2 class="text-2xl font-semibold text-gray-800 mb-6 flex items-center">
+                    <i class="fas fa-key text-primary mr-3"></i>
+                    Change Your Password
+                </h2>
+                <form method="POST" action="{{ url_for('main.profile') }}" class="space-y-4">
+                    <input type="hidden" name="action" value="change_password">
+                    <div>
+                        <label for="current_password" class="block text-sm font-medium text-gray-700 mb-2">Current Password</label>
+                        <input type="password" id="current_password" name="current_password" required
+                               class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-primary focus:ring-4 focus:ring-primary/20">
+                    </div>
+                    <div>
+                        <label for="new_password" class="block text-sm font-medium text-gray-700 mb-2">New Password</label>
+                        <input type="password" id="new_password" name="new_password" required
+                               class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-primary focus:ring-4 focus:ring-primary/20">
+                    </div>
+                    <div>
+                        <label for="confirm_password" class="block text-sm font-medium text-gray-700 mb-2">Confirm New Password</label>
+                        <input type="password" id="confirm_password" name="confirm_password" required
+                               class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-primary focus:ring-4 focus:ring-primary/20">
+                    </div>
+                    <button type="submit" class="w-full btn-primary text-white px-6 py-3 rounded-xl hover:shadow-lg transition-all duration-300">
+                        Change Password
+                    </button>
+                </form>
+            </div>
+
+        </div>
+    </main>
+</body>
+</html>

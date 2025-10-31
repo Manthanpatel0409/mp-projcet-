@@ -1,10 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign Up | OCR Expense Tracker</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         * {
             margin: 0;
@@ -53,8 +56,8 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: radial-gradient(circle at 20% 20%, rgba(255,255,255,0.1) 0%, transparent 50%),
-                        radial-gradient(circle at 80% 40%, rgba(255,255,255,0.08) 0%, transparent 50%);
+            background: radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 40%, rgba(255, 255, 255, 0.08) 0%, transparent 50%);
         }
 
         .signup-header-content {
@@ -67,7 +70,7 @@
             font-weight: 700;
             margin-bottom: 8px;
             letter-spacing: -0.02em;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
         }
 
         .signup-subtitle {
@@ -302,7 +305,9 @@
         }
 
         @keyframes spin {
-            to { transform: rotate(360deg); }
+            to {
+                transform: rotate(360deg);
+            }
         }
 
         .error-message {
@@ -335,9 +340,17 @@
         }
 
         @keyframes successPulse {
-            0% { transform: scale(0); }
-            50% { transform: scale(1.1); }
-            100% { transform: scale(1); }
+            0% {
+                transform: scale(0);
+            }
+
+            50% {
+                transform: scale(1.1);
+            }
+
+            100% {
+                transform: scale(1);
+            }
         }
 
         .success-title {
@@ -400,12 +413,40 @@
         }
     </style>
 </head>
+
 <body>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div id="flash-modal" class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+          <div class="bg-white rounded-2xl p-8 max-w-md w-full shadow-2xl text-center">
+            {% for category, message in messages %}
+              {% if category == 'success' %}
+                <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <i class="fas fa-check text-green-600 text-3xl"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-gray-800 mb-4">Success!</h3>
+                <p class="text-gray-600 mb-6">{{ message }}</p>
+              {% else %}
+                 <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <i class="fas fa-times text-red-600 text-3xl"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-gray-800 mb-4">Error</h3>
+                <p class="text-gray-600 mb-6">{{ message }}</p>
+              {% endif %}
+            {% endfor %}
+            <button onclick="document.getElementById('flash-modal').remove()" class="btn-primary px-6 py-2 rounded-full font-semibold">
+              Close
+            </button>
+          </div>
+        </div>
+      {% endif %}
+    {% endwith %}
+
     <div class="signup-container">
         <div class="signup-header">
             <div class="signup-header-content">
                 <h1 class="signup-title">JOIN US</h1>
-                <p class="signup-subtitle">OCR EXPENSE TRACKER</p>
+                <p class="signup-subtitle">ExpensEye</p>
             </div>
         </div>
 
@@ -421,32 +462,36 @@
                 </div>
             </div>
 
-            <form id="signupForm" method="POST" action="/register">
+            <form id="signupForm" method="POST" action="{{ url_for('main.register') }}">
                 <div class="form-step active" id="step1">
                     <h2 class="step-title">Basic Information</h2>
                     <p class="step-description">Let's start with your basic details</p>
-                    
+
                     <div class="form-group">
                         <label for="firstName" class="form-label">First Name</label>
-                        <input type="text" id="firstName" name="firstName" class="form-input" placeholder="Enter your first name" required>
+                        <input type="text" id="firstName" name="firstName" class="form-input"
+                            placeholder="Enter your first name" required>
                         <div class="error-message" id="firstNameError"></div>
                     </div>
 
                     <div class="form-group">
                         <label for="lastName" class="form-label">Last Name</label>
-                        <input type="text" id="lastName" name="lastName" class="form-input" placeholder="Enter your last name" required>
+                        <input type="text" id="lastName" name="lastName" class="form-input"
+                            placeholder="Enter your last name" required>
                         <div class="error-message" id="lastNameError"></div>
                     </div>
 
                     <div class="form-group">
                         <label for="email" class="form-label">Email Address</label>
-                        <input type="email" id="email" name="email" class="form-input" placeholder="Enter your email address" required>
+                        <input type="email" id="email" name="email" class="form-input"
+                            placeholder="Enter your email address" required>
                         <div class="error-message" id="emailError"></div>
                     </div>
 
                     <div class="form-group">
                         <label for="username" class="form-label">Username</label>
-                        <input type="text" id="username" name="username" class="form-input" placeholder="Choose a username" required>
+                        <input type="text" id="username" name="username" class="form-input"
+                            placeholder="Choose a username" required>
                         <div class="error-message" id="usernameError"></div>
                     </div>
 
@@ -460,16 +505,18 @@
                 <div class="form-step" id="step2">
                     <h2 class="step-title">Create Password</h2>
                     <p class="step-description">Choose a strong password for your account</p>
-                    
+
                     <div class="form-group">
                         <label for="password" class="form-label">Password</label>
-                        <input type="password" id="password" name="password" class="form-input" placeholder="Create a password" required>
+                        <input type="password" id="password" name="password" class="form-input"
+                            placeholder="Create a password" required>
                         <div class="error-message" id="passwordError"></div>
                     </div>
 
                     <div class="form-group">
                         <label for="confirmPassword" class="form-label">Confirm Password</label>
-                        <input type="password" id="confirmPassword" name="confirmPassword" class="form-input" placeholder="Confirm your password" required>
+                        <input type="password" id="confirmPassword" name="confirmPassword" class="form-input"
+                            placeholder="Confirm your password" required>
                         <div class="error-message" id="confirmPasswordError"></div>
                     </div>
 
@@ -486,7 +533,7 @@
                 <div class="form-step" id="step3">
                     <h2 class="step-title">Preferences</h2>
                     <p class="step-description">Customize your expense tracking experience</p>
-                    
+
                     <div class="form-group">
                         <label for="currency" class="form-label">Preferred Currency</label>
                         <select id="currency" name="currency" class="form-select" required>
@@ -524,7 +571,8 @@
                     <div class="checkbox-group">
                         <input type="checkbox" id="terms" name="terms" required>
                         <label for="terms">
-                            I agree to the <a href="#" target="_blank">Terms of Service</a> and <a href="#" target="_blank">Privacy Policy</a>
+                            I agree to the <a href="#" target="_blank">Terms of Service</a> and <a href="#"
+                                target="_blank">Privacy Policy</a>
                         </label>
                         <div class="error-message" id="termsError"></div>
                     </div>
@@ -541,7 +589,7 @@
             </form>
 
             <div class="login-link">
-                <p>Already have an account? <a href="{{ url_for('login') }}">Sign in here</a></p>
+                <p>Already have an account? <a href="{{ url_for('main.login') }}">Sign in here</a></p>
             </div>
         </div>
     </div>
@@ -570,12 +618,59 @@
                 });
             }
 
-            nextStep(step) {
-                if (this.validateStep(step)) {
-                    this.currentStep++;
-                    this.showStep(this.currentStep);
-                    this.updateProgress();
+            // nextStep(step) {
+            //     if (this.validateStep(step)) {
+            //         this.currentStep++;
+            //         this.showStep(this.currentStep);
+            //         this.updateProgress();
+            //     }
+            // }
+
+            async nextStep(step) {
+                // First, run local validation (e.g., "is field empty?")
+                if (!this.validateStep(step)) {
+                    return; // Stop if local validation fails
                 }
+
+                // --- NEW: Real-time Email Check ---
+                if (step === 1) {
+                    const emailField = document.getElementById('email');
+                    const email = emailField.value;
+
+                    // Show a temporary loading state
+                    this.showError(emailField, 'Checking availability...');
+                    
+                    try {
+                        const formData = new FormData();
+                        formData.append('email', email);
+
+                        const response = await fetch("{{ url_for('main.check_email') }}", {
+                            method: 'POST',
+                            body: formData
+                        });
+                        
+                        const result = await response.json();
+
+                        if (result.exists) {
+                            // Email exists, show error and stop
+                            this.showError(emailField, 'Email already exists. Please choose another.');
+                            return; // Stop them from proceeding
+                        } else {
+                            // Email is available, clear message and proceed
+                            this.clearError(emailField);
+                        }
+                    } catch (error) {
+                        console.error('Email check failed:', error);
+                        this.showError(emailField, 'Could not verify email. Please try again.');
+                        return; // Stop on server error
+                    }
+                }
+                // --- END of new check ---
+
+                // If all checks passed, move to next step
+                this.currentStep++;
+                this.showStep(this.currentStep);
+                this.updateProgress();
             }
 
             prevStep(step) {
@@ -741,9 +836,9 @@
                 e.preventDefault();
 
                 // Validate final step
-                const finalFields = ['currency', 'budgetGoal', 'terms'];3
+                const finalFields = ['currency', 'budgetGoal', 'terms']; 3
                 let isValid = true;
-                
+
                 finalFields.forEach(fieldId => {
                     const field = document.getElementById(fieldId);
                     if (!this.validateField(field)) isValid = false;
@@ -757,9 +852,6 @@
                 submitBtn.innerHTML = '<span class="loading-spinner"></span>Creating Account...';
                 submitBtn.disabled = true;
 
-                // The form is ready to be submitted to the Flask backend.
-                // The form's 'action' attribute is set to '{{ url_for('register') }}',
-                // so we can now submit the form programmatically.
                 e.currentTarget.submit();
             }
         }
@@ -775,4 +867,5 @@
         const signupForm = new SignupForm();
     </script>
 </body>
+
 </html>

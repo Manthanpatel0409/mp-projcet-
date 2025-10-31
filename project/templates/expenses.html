@@ -21,6 +21,7 @@
     </script>
 </head>
 <body class="bg-gradient-to-br from-teal-50 via-emerald-50 to-cyan-50 min-h-screen">
+
     <!-- Header -->
     <header class="bg-white/80 backdrop-blur-md shadow-lg sticky top-0 z-50 border-b border-teal-100">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -30,19 +31,19 @@
                     <span class="text-2xl font-bold">All Expenses</span>
                 </a>
                 <nav class="hidden md:flex items-center space-x-4">
-    <a href="{{ url_for('home') }}" 
+    <a href="{{ url_for('main.home') }}" 
        class="bg-gradient-to-r from-primary to-secondary text-white px-6 py-2 rounded-full hover:shadow-lg transition-all duration-300 flex items-center space-x-2">
         <i class="fas fa-home"></i>
         <span>Home</span>
     </a>
 
-    <a href="{{ url_for('analytics') }}" 
+    <a href="{{ url_for('main.analytics') }}" 
        class="bg-gradient-to-r from-primary to-secondary text-white px-6 py-2 rounded-full hover:shadow-lg transition-all duration-300 flex items-center space-x-2">
         <i class="fas fa-chart-line"></i>
         <span>Analytics</span>
     </a>
 
-    <a href="{{ url_for('logout') }}" 
+    <a href="{{ url_for('main.logout') }}" 
        class="bg-gradient-to-r from-red-500 to-red-600 text-white px-6 py-2 rounded-full hover:shadow-lg transition-all duration-300 flex items-center space-x-2">
         <i class="fas fa-sign-out-alt"></i>
         <span>Logout</span>
@@ -125,33 +126,49 @@
                     <tbody id="expenses-tbody" class="divide-y divide-gray-100">
     {% if expenses %}
         {% for exp in expenses %}
-        <tr class="hover:bg-teal-50/50 transition-colors">
+        <tr id="expense-{{ exp.id }}" class="hover:bg-teal-50/50 transition-colors">
             <td class="px-6 py-4 text-sm text-gray-600">{{ exp.id }}</td>
-            <td class="px-6 py-4 text-sm font-medium text-gray-800">{{ exp.name }}</td>
+            
+            <td class="exp-name px-6 py-4 text-sm font-medium text-gray-800">{{ exp.name }}</td>
             <td class="px-6 py-4 text-sm text-gray-600">{{ exp.date.strftime('%Y-%m-%d') }}</td>
-            <td class="px-6 py-4">
+            <td class="exp-category px-6 py-4">
                 <span class="inline-flex px-3 py-1 text-xs font-medium bg-blue-100 text-blue-800 rounded-full">
                     {{ exp.category or 'Uncategorized' }}
                 </span>
             </td>
-            <td class="px-6 py-4 text-sm font-semibold text-primary">₹{{ "%.2f"|format(exp.amount) }}</td>
+            <td class="exp-amount px-6 py-4 text-sm font-semibold text-primary">₹{{ "%.2f"|format(exp.amount) }}</td>
             <td class="px-6 py-4 text-sm text-gray-500 max-w-xs truncate">{{ exp.text or '-' }}</td>
             <td class="px-6 py-4">
                 <div class="flex space-x-2">
-                    <form action="{{ url_for('edit_expense', expense_id=exp.id) }}" method="get">
-                        <button 
-    type="button"
-    onclick="openEditModal('{{ exp.id }}', '{{ exp.name }}', '{{ exp.amount }}', '{{ exp.category }}')"
-    class="text-primary hover:text-secondary p-2 rounded-lg hover:bg-teal-50 transition-colors"
-    title="Edit">
-    <i class="fas fa-edit"></i>
-</button>
-                    </form>
-                    <form action="{{ url_for('delete_expense', expense_id=exp.id) }}" method="post" onsubmit="return confirm('Are you sure you want to delete this expense?');">
+                    <!-- <button 
+                        type="button"
+                        onclick="openEditModal('{{ exp.id }}', '{{ exp.name }}', '{{ exp.amount }}', '{{ exp.category }}')"
+                        class="text-primary hover:text-secondary p-2 rounded-lg hover:bg-teal-50 transition-colors"
+                        title="Edit">
+                        <i class="fas fa-edit"></i>
+                    </button> -->
+
+                    <button 
+                        type="button"
+                        onclick="openEditModal('{{ url_for('main.edit_expense', expense_id=exp.id) }}', '{{ exp.id }}', '{{ exp.name }}', '{{ exp.amount }}', '{{ exp.category }}')"
+                        class="text-primary hover:text-secondary p-2 rounded-lg hover:bg-teal-50 transition-colors"
+                        title="Edit">
+                        <i class="fas fa-edit"></i>
+                    </button>
+
+                    <!-- <form action="{{ url_for('main.delete_expense', expense_id=exp.id) }}" method="post" onsubmit="return confirm('Are you sure you want to delete this expense?');">
+                        <button type="submit" class="text-red-500 hover:text-red-700 p-2 rounded-lg hover:bg-red-50 transition-colors" title="Delete">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </form> -->
+
+                    <form onsubmit="deleteExpense(event, '{{ url_for('main.delete_expense', expense_id=exp.id) }}', {{ exp.id }})">
                         <button type="submit" class="text-red-500 hover:text-red-700 p-2 rounded-lg hover:bg-red-50 transition-colors" title="Delete">
                             <i class="fas fa-trash"></i>
                         </button>
                     </form>
+
+
                 </div>
             </td>
         </tr>
@@ -189,12 +206,12 @@
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">Category</label>
                     <select id="edit-category" class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-primary focus:ring-4 focus:ring-primary/20">
-                        <option>Food & Dining</option>
-                        <option>Groceries</option>
-                        <option>Transportation</option>
-                        <option>Entertainment</option>
-                        <option>Shopping</option>
-                        <option>Other</option>
+                        <option value="Food & Dining">Food & Dining</option>
+                        <option value="Groceries">Groceries</option>
+                        <option value="Transportation">Transportation</option>
+                        <option value="Entertainment">Entertainment</option>
+                        <option value="Shopping">Shopping</option>
+                        <option value="Other">Other</option>
                     </select>
                 </div>
                 <div class="flex space-x-4 pt-4">
@@ -209,7 +226,7 @@
         </div>
     </div>
 
-    <script>
+    <!-- <script>
         // Mobile menu toggle
         document.getElementById('mobile-menu-btn').addEventListener('click', function() {
             const menu = document.getElementById('mobile-menu');
@@ -343,6 +360,163 @@ document.getElementById('edit-form').addEventListener('submit', async function (
 });
 
 
+    </script> -->
+
+
+
+    <script>
+        // Mobile menu toggle
+        document.getElementById('mobile-menu-btn').addEventListener('click', function() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        });
+
+        // Search functionality
+        document.getElementById('search-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const name = document.getElementById('name').value;
+            const date = document.getElementById('date').value;
+            
+            filterExpenses(name, date);
+        });
+
+        function filterExpenses(name, date) {
+            const rows = document.querySelectorAll('#expenses-tbody tr');
+            let visibleCount = 0;
+            
+            rows.forEach(row => {
+                const expenseName = row.cells[1].textContent.toLowerCase();
+                const expenseDate = row.cells[2].textContent;
+                
+                const nameMatch = !name || expenseName.includes(name.toLowerCase());
+                const dateMatch = !date || expenseDate === date;
+                
+                if (nameMatch && dateMatch) {
+                    row.style.display = '';
+                    visibleCount++;
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+            
+            // Show/hide no data message
+            const noData = document.getElementById('no-data');
+            const tbody = document.getElementById('expenses-tbody');
+            if (visibleCount === 0) {
+                tbody.style.display = 'none';
+                noData.classList.remove('hidden');
+            } else {
+                tbody.style.display = '';
+                noData.classList.add('hidden');
+            }
+        }
+
+        // --- NEW EDIT MODAL FUNCTIONS ---
+
+        function openEditModal(editUrl, id, name, amount, category) {
+            // Show modal
+            const modal = document.getElementById('edit-modal');
+            modal.classList.remove('hidden');
+
+            // Store expense ID AND the correct edit URL
+            modal.dataset.expenseId = id;
+            modal.dataset.editUrl = editUrl;
+
+            // Fill input fields
+            document.getElementById('edit-name').value = name;
+            document.getElementById('edit-amount').value = parseFloat(amount);
+            document.getElementById('edit-category').value = category || 'Other';
+        }
+
+        function closeEditModal() {
+            document.getElementById('edit-modal').classList.add('hidden');
+        }
+
+        // NEW: Handle form submission with Fetch
+        document.getElementById('edit-form').addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            const modal = document.getElementById('edit-modal');
+            const expenseId = modal.dataset.expenseId;
+            const editUrl = modal.dataset.editUrl; // Get the correct URL
+
+            const formData = new FormData();
+            const name = document.getElementById('edit-name').value;
+            const amount = document.getElementById('edit-amount').value;
+            const category = document.getElementById('edit-category').value;
+            
+            formData.append('name', name);
+            formData.append('amount', amount);
+            formData.append('category', category);
+
+            try {
+                const response = await fetch(editUrl, { // Use the correct URL here
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (response.ok) {
+                    // Update table row instantly without reload
+                    // THIS IS THE FIX (using backticks ``)
+                    const row = document.getElementById(`expense-${expenseId}`);
+                    if (row) {
+                        row.querySelector('.exp-name').textContent = name;
+                        row.querySelector('.exp-amount').textContent = '₹' + parseFloat(amount).toFixed(2);
+                        // Update category span
+                        row.querySelector('.exp-category span').textContent = category;
+                    }
+                    closeEditModal();
+                } else {
+                    alert('Error updating expense!');
+                }
+            } catch (err) {
+                console.error(err);
+                alert('Something went wrong.');
+            }
+        });
+
+        function deleteExpense(event, deleteUrl, expenseId) {
+            // 1. Stop the form from submitting normally
+            event.preventDefault(); 
+
+            // 2. Ask for confirmation
+            if (!confirm('Are you sure you want to delete this expense?')) {
+                return;
+            }
+
+            // 3. Send the delete request in the background
+            fetch(deleteUrl, { // Use the correct URL here
+                method: 'POST',
+            })
+            .then(response => response.json())
+            .then(result => {
+                if (result.success) {
+                    // 4. Success! Remove the row from the table instantly.
+                    // THIS IS THE FIX (using backticks ``)
+                    const row = document.getElementById(`expense-${expenseId}`);
+                    if (row) {
+                        row.remove();
+                    }
+                } else {
+                    // 5. Show an error if it fails
+                    alert('Error: ' + result.message);
+                }
+            })
+            .catch(err => {
+                console.error('Delete error:', err);
+                alert('An unexpected error occurred.');
+            });
+        }
+
+        // --- END OF NEW FUNCTIONS ---
+
+        // (Keep the old logout function if it exists, or remove if unused)
+        function logout() {
+            // This link is handled by the <a> tag now, but we can keep it for the mobile menu
+            window.location.href = "{{ url_for('main.logout') }}";
+        }
     </script>
+
+
 </body>
 </html>

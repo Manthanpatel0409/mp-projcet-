@@ -4,7 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign In | OCR Expense Tracker</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         * {
             margin: 0;
@@ -348,12 +350,26 @@
     </style>
 </head>
 <body>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <div style="position: absolute; top: 1rem; left: 1rem; right: 1rem; z-index: 1000;">
+      {% for category, message in messages %}
+        <div class="p-4 mb-4 rounded-lg text-center 
+                    {% if category == 'success' %}bg-green-100 text-green-800
+                    {% else %}bg-red-100 text-red-800{% endif %}">
+          {{ message }}
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}
+
     <div class="login-card">
         <!-- Welcome Section (Left) -->
         <div class="welcome-section">
             <div class="welcome-content">
                 <h1 class="welcome-title">WELCOME</h1>
-                <h2 class="welcome-subtitle">OCR EXPENSE TRACKER</h2>
+                <h2 class="welcome-subtitle">ExpensEye</h2>
                 <p class="welcome-description">
                     Streamline your expense management with our intelligent OCR technology. 
                     Upload receipts and let our system automatically extract and categorize your expenses.
@@ -376,8 +392,8 @@
                     <input type="hidden" name="action" value="login" id="form-action">
 
                     <div class="form-group">
-                        <label for="username" class="form-label">User name</label>
-                        <input type="text" id="username" name="username" class="form-input" placeholder="Enter your username" required>
+                        <label for="username" class="form-label">Email Address</label>
+                        <input type="email" id="username" name="username" class="form-input" placeholder="Enter your email address" required>
                     </div>
 
                     <div class="form-group">
@@ -432,7 +448,7 @@
             
             // Redirect to home page after a short delay
             setTimeout(() => {
-            window.location.href = "{{ url_for('home') }}";
+            window.location.href = "{{ url_for('main.home') }}";
             }, 1000);
         }
 

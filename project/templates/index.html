@@ -7,6 +7,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
   <script>
     tailwind.config = {
       theme: {
@@ -54,7 +55,7 @@
         <div class="flex items-center">
           <div class="flex items-center space-x-2">
             <i class="fas fa-receipt text-2xl text-teal-600"></i>
-            <span class="text-xl font-bold text-gray-800">OCR Expense Tracker</span>
+            <span class="text-xl font-bold text-gray-800">ExpensEye</span>
           </div>
         </div>
         
@@ -68,10 +69,10 @@
         </div>
         
         <div class="flex items-center space-x-4">
-          <a href="{{ url_for('login') }}" class="text-primary-600 hover:text-primary-700 px-4 py-2 text-sm font-semibold transition-colors duration-200">
+          <a href="{{ url_for('main.login') }}" class="text-primary-600 hover:text-primary-700 px-4 py-2 text-sm font-semibold transition-colors duration-200">
             Login
           </a>
-          <a href="{{ url_for('register') }}" class="bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 text-white px-6 py-2 rounded-full text-sm font-semibold shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105">
+          <a href="{{ url_for('main.register') }}" class="bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 text-white px-6 py-2 rounded-full text-sm font-semibold shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105">
             Get Started Free
           </a>
         </div>
@@ -101,7 +102,7 @@
           </p>
           
           <div class="flex flex-col sm:flex-row gap-4">
-            <a href="{{ url_for('register') }}" class="bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 text-white px-8 py-4 rounded-full text-lg font-semibold shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105 text-center">
+            <a href="{{ url_for('main.register') }}" class="bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 text-white px-8 py-4 rounded-full text-lg font-semibold shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105 text-center">
               <i class="fas fa-rocket mr-2"></i>
               Get Started Free
             </a>
@@ -209,7 +210,7 @@
               <span class="text-slate-600">Mobile app access</span>
             </li>
           </ul>
-          <a href="{{ url_for('register') }}" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-800 py-3 px-6 rounded-full font-semibold text-center block transition-colors duration-200">
+          <a href="{{ url_for('main.register') }}" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-800 py-3 px-6 rounded-full font-semibold text-center block transition-colors duration-200">
             Get Started Free
           </a>
         </div>
@@ -251,7 +252,7 @@
               <span class="text-slate-600">Priority support</span>
             </li>
           </ul>
-          <a href="{{ url_for('register') }}" class="w-full bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 text-white py-3 px-6 rounded-full font-semibold text-center block transition-all duration-200 transform hover:scale-105">
+          <a href="{{ url_for('main.register') }}" class="w-full bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 text-white py-3 px-6 rounded-full font-semibold text-center block transition-all duration-200 transform hover:scale-105">
             Start Pro Trial
           </a>
         </div>
@@ -288,7 +289,7 @@
               <span class="text-slate-600">Dedicated support</span>
             </li>
           </ul>
-          <a href="{{ url_for('register') }}" class="w-full bg-gradient-to-r from-secondary-500 to-secondary-600 hover:from-secondary-600 hover:to-secondary-700 text-white py-3 px-6 rounded-full font-semibold text-center block transition-all duration-200 transform hover:scale-105">
+          <a href="{{ url_for('main.register') }}" class="w-full bg-gradient-to-r from-secondary-500 to-secondary-600 hover:from-secondary-600 hover:to-secondary-700 text-white py-3 px-6 rounded-full font-semibold text-center block transition-all duration-200 transform hover:scale-105">
             Contact Sales
           </a>
         </div>
@@ -305,7 +306,7 @@
             Thousands
           </span>
         </h2>
-        <p class="text-xl text-slate-600">See what our users are saying about EXPENCE</p>
+        <p class="text-xl text-slate-600">See what our users are saying about EXPENSE</p>
       </div>
       
       <div class="grid md:grid-cols-3 gap-8">
@@ -409,7 +410,7 @@
           </div>
 
           <div class="flex flex-col sm:flex-row gap-4">
-            <a href="{{ url_for('register') }}" class="bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 text-white px-6 py-3 rounded-full font-semibold text-center transition-all duration-200 transform hover:scale-105">
+            <a href="{{ url_for('main.register') }}" class="bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 text-white px-6 py-3 rounded-full font-semibold text-center transition-all duration-200 transform hover:scale-105">
               <i class="fas fa-rocket mr-2"></i>
               Start Your Journey
             </a>
@@ -443,7 +444,7 @@
       </div>
       
       <div class="bg-gradient-to-br from-white to-primary-50/30 p-8 lg:p-12 rounded-3xl shadow-xl border border-primary-100/50">
-<form class="space-y-6" method="POST" action="{{ url_for('contact') }}">
+<form class="space-y-6" method="POST" action="{{ url_for('main.contact') }}">
           <div class="grid md:grid-cols-2 gap-6">
             <div>
               <label for="name" class="block text-sm font-semibold text-slate-700 mb-2">
@@ -572,7 +573,7 @@
       <p class="text-xl text-primary-100 mb-8 leading-relaxed">
         Join thousands of users already managing their finances smarter with EXPENCE. Start your free trial today and experience the difference.
       </p>
-      <a href="{{ url_for('register') }}" class="inline-flex items-center bg-white text-primary-700 px-8 py-4 rounded-full text-lg font-bold shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105">
+      <a href="{{ url_for('main.register') }}" class="inline-flex items-center bg-white text-primary-700 px-8 py-4 rounded-full text-lg font-bold shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105">
         <i class="fas fa-rocket mr-3"></i>
         Start Free Today
         <i class="fas fa-arrow-right ml-3"></i>
@@ -580,13 +581,59 @@
     </div>
   </section>
 
-  <footer class="bg-slate-900 text-slate-300 py-12">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-      <div class="text-2xl font-bold bg-gradient-to-r from-primary-400 to-secondary-400 bg-clip-text text-transparent mb-4">
-        EXPENCE
+  <footer class="bg-white border-t border-teal-100 mt-16">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+      
+      <div>
+        <div class="flex items-center space-x-2 mb-4">
+          <i class="fas fa-receipt text-3xl text-teal-600"></i>
+          <span class="text-2xl font-bold text-gray-800">LedgerLens</span>
+        </div>
+        <p class="text-gray-500 text-sm">
+          Smart expense tracking made easy.
+        </p>
+        <p class="text-gray-400 text-sm mt-4">
+          &copy; 2025 LedgerLens. All rights reserved.
+        </p>
       </div>
-      <p class="text-slate-400">© 2024 EXPENCE. All rights reserved. Making expense tracking effortless.</p>
+
+      <div>
+        <h3 class="text-sm font-semibold text-gray-900 tracking-wider uppercase mb-4">Quick Links</h3>
+        <ul class="space-y-3">
+          <li><a href="{{ url_for('main.index') }}#features" class="text-gray-500 hover:text-teal-600">Features</a></li>
+          <li><a href="{{ url_for('main.index') }}#pricing" class="text-gray-500 hover:text-teal-600">Pricing</a></li>
+          <li><a href="{{ url_for('main.index') }}#about" class="text-gray-500 hover:text-teal-600">About Us</a></li>
+          <li><a href="{{ url_for('main.index') }}#contact" class="text-gray-500 hover:text-teal-600">Contact</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h3 class="text-sm font-semibold text-gray-900 tracking-wider uppercase mb-4">App</h3>
+        <ul class="space-y-3">
+          <li><a href="{{ url_for('main.login') }}" class="text-gray-500 hover:text-teal-600">Login</a></li>
+          <li><a href="{{ url_for('main.register') }}" class="text-gray-500 hover:text-teal-600">Sign Up</a></li>
+          <li><a href="{{ url_for('main.home') }}" class="text-gray-500 hover:text-teal-600">My Dashboard</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h3 class="text-sm font-semibold text-gray-900 tracking-wider uppercase mb-4">Follow Us</h3>
+        <div class="flex space-x-5">
+          <a href="#" class="text-gray-400 hover:text-teal-600">
+            <i class="fab fa-twitter text-xl"></i>
+          </a>
+          <a href="#" class="text-gray-400 hover:text-teal-600">
+            <i class="fab fa-github text-xl"></i>
+          </a>
+          <a href="#" class="text-gray-400 hover:text-teal-600">
+            <i class="fab fa-linkedin text-xl"></i>
+          </a>
+        </div>
+      </div>
+
     </div>
-  </footer>
+  </div>
+</footer>
 </body>
 </html>

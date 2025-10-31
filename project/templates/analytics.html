@@ -22,6 +22,35 @@
     </script>
 </head>
 <body class="bg-gradient-to-br from-teal-50 via-emerald-50 to-cyan-50 min-h-screen">
+
+
+    <!-- {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div id="flash-modal" class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+          <div class="bg-white rounded-2xl p-8 max-w-md w-full shadow-2xl text-center">
+            {% for category, message in messages %}
+              {% if category == 'success' %}
+                <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <i class="fas fa-check text-green-600 text-3xl"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-gray-800 mb-4">Success!</h3>
+                <p class="text-gray-600 mb-6">{{ message }}</p>
+              {% else %}
+                 <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <i class="fas fa-times text-red-600 text-3xl"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-gray-800 mb-4">Error</h3>
+                <p class="text-gray-600 mb-6">{{ message }}</p>
+              {% endif %}
+            {% endfor %}
+            <button onclick="document.getElementById('flash-modal').remove()" class="btn-primary px-6 py-2 rounded-lg font-medium text-white" style="background: linear-gradient(135deg, #0d9488 0%, #059669 100%);">
+              Close
+            </button>
+          </div>
+        </div>
+      {% endif %}
+    {% endwith %} -->
+    
     <!-- Header -->
     <header class="bg-white/80 backdrop-blur-md shadow-lg sticky top-0 z-50 border-b border-teal-100">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -31,14 +60,24 @@
                     <span class="text-2xl font-bold">Analytics Dashboard</span>
                 </a>
                 <nav class="hidden md:flex items-center space-x-4">
-                    <a href="home.html" class="bg-gradient-to-r from-primary to-secondary text-white px-6 py-2 rounded-full hover:shadow-lg transition-all duration-300 flex items-center space-x-2">
+                    <!-- <a href="home.html" class="bg-gradient-to-r from-primary to-secondary text-white px-6 py-2 rounded-full hover:shadow-lg transition-all duration-300 flex items-center space-x-2">
                         <i class="fas fa-home"></i>
                         <span>Home</span>
                     </a>
                     <a href="expenses.html" class="bg-gradient-to-r from-primary to-secondary text-white px-6 py-2 rounded-full hover:shadow-lg transition-all duration-300 flex items-center space-x-2">
                         <i class="fas fa-list"></i>
                         <span>Expenses</span>
+                    </a> -->
+
+                    <a href="{{ url_for('main.home') }}" class="bg-gradient-to-r from-primary to-secondary text-white px-6 py-2 rounded-full hover:shadow-lg transition-all duration-300 flex items-center space-x-2">
+                        <i class="fas fa-home"></i>
+                        <span>Home</span>
                     </a>
+                    <a href="{{ url_for('main.view_expenses') }}" class="bg-gradient-to-r from-primary to-secondary text-white px-6 py-2 rounded-full hover:shadow-lg transition-all duration-300 flex items-center space-x-2">
+                        <i class="fas fa-list"></i>
+                        <span>Expenses</span>
+                    </a>
+
                     <button onclick="logout()" class="bg-gradient-to-r from-red-500 to-red-600 text-white px-6 py-2 rounded-full hover:shadow-lg transition-all duration-300 flex items-center space-x-2">
                         <i class="fas fa-sign-out-alt"></i>
                         <span>Logout</span>
@@ -75,7 +114,7 @@
 
         <!-- Stats Section -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-            <div class="bg-white/70 backdrop-blur-md rounded-2xl p-6 text-center shadow-xl border border-teal-100 hover:shadow-2xl transition-all duration-300 hover:-translate-y-1">
+            <!-- <div class="bg-white/70 backdrop-blur-md rounded-2xl p-6 text-center shadow-xl border border-teal-100 hover:shadow-2xl transition-all duration-300 hover:-translate-y-1">
                 <div class="text-4xl mb-4">💰</div>
                 <div class="text-3xl font-bold text-gray-800 mb-2" id="total-spent">₹15,750</div>
                 <div class="text-gray-600">Total Spent</div>
@@ -94,7 +133,29 @@
                 <div class="text-4xl mb-4">🏷</div>
                 <div class="text-3xl font-bold text-gray-800 mb-2" id="category-count">6</div>
                 <div class="text-gray-600">Categories</div>
+            </div> -->
+
+            <div class="bg-white/70 backdrop-blur-md rounded-2xl p-6 text-center shadow-xl border border-teal-100 hover:shadow-2xl transition-all duration-300 hover:-translate-y-1">
+                <div class="text-4xl mb-4">💰</div>
+                <div class="text-3xl font-bold text-gray-800 mb-2" id="total-spent">₹{{ total_spent | round(2) }}</div>
+                <div class="text-gray-600">Total Spent</div>
             </div>
+            <div class="bg-white/70 backdrop-blur-md rounded-2xl p-6 text-center shadow-xl border border-teal-100 hover:shadow-2xl transition-all duration-300 hover:-translate-y-1">
+                <div class="text-4xl mb-4">📊</div>
+                <div class="text-3xl font-bold text-gray-800 mb-2" id="total-expenses">{{ total_expenses }}</div>
+                <div class="text-gray-600">Total Expenses</div>
+            </div>
+            <div class="bg-white/70 backdrop-blur-md rounded-2xl p-6 text-center shadow-xl border border-teal-100 hover:shadow-2xl transition-all duration-300 hover:-translate-y-1">
+                <div class="text-4xl mb-4">📅</div>
+                <div class="text-3xl font-bold text-gray-800 mb-2" id="monthly-count">{{ monthly_count }}</div>
+                <div class="text-gray-600">This Month</div>
+            </div>
+            <div class="bg-white/70 backdrop-blur-md rounded-2xl p-6 text-center shadow-xl border border-teal-100 hover:shadow-2xl transition-all duration-300 hover:-translate-y-1">
+                <div class="text-4xl mb-4">🏷</div>
+                <div class="text-3xl font-bold text-gray-800 mb-2" id="category-count">{{ category_count }}</div>
+                <div class="text-gray-600">Categories</div>
+            </div>
+
         </div>
 
         <!-- Charts and Top Expenses -->
@@ -116,7 +177,7 @@
                     <i class="fas fa-trophy text-accent mr-3"></i>
                     Top 5 Expenses
                 </h2>
-                <div class="space-y-4" id="top-expenses">
+                <!-- <div class="space-y-4" id="top-expenses">
                     <div class="flex justify-between items-center p-4 bg-gradient-to-r from-teal-50 to-emerald-50 rounded-xl border border-teal-100 hover:shadow-md transition-all duration-300">
                         <span class="font-medium text-gray-800">Grocery Shopping</span>
                         <span class="font-bold text-primary">₹2,500</span>
@@ -137,7 +198,19 @@
                         <span class="font-medium text-gray-800">Online Shopping</span>
                         <span class="font-bold text-primary">₹750</span>
                     </div>
+                </div> -->
+
+                <div class="space-y-4" id="top-expenses">
+                    {% for exp in top_expenses %}
+                    <div class="flex justify-between items-center p-4 bg-gradient-to-r from-teal-50 to-emerald-50 rounded-xl border border-teal-100 hover:shadow-md transition-all duration-300">
+                        <span class="font-medium text-gray-800">{{ exp.name }}</span>
+                        <span class="font-bold text-primary">₹{{ exp.amount | round(2) }}</span>
+                    </div>
+                    {% else %}
+                    <p class="text-gray-500 text-center">No expenses found.</p>
+                    {% endfor %}
                 </div>
+
             </div>
         </div>
 
@@ -174,12 +247,12 @@
         </div>
 
         <!-- Refresh Button -->
-        <div class="mt-12 text-center">
+        <!-- <div class="mt-12 text-center">
             <button onclick="refreshData()" class="bg-gradient-to-r from-primary to-secondary text-white px-6 py-3 rounded-xl hover:shadow-lg transition-all duration-300 flex items-center space-x-2">
                 <i class="fas fa-sync-alt mr-2"></i>
                 <span>Refresh Data</span>
             </button>
-        </div>
+        </div> -->
     </main>
 
     <script>
@@ -199,14 +272,22 @@
         });
 
         // Monthly Chart
+        // const monthlyCtx = document.getElementById('monthlyChart').getContext('2d');
+        // const monthlyChart = new Chart(monthlyCtx, {
+        //     type: 'line',
+        //     data: {
+        //         labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+        //         datasets: [{
+        //             label: 'Amount Spent (₹)',
+        //             data: [2500, 3200, 2800, 4100, 3600, 3450],
         const monthlyCtx = document.getElementById('monthlyChart').getContext('2d');
         const monthlyChart = new Chart(monthlyCtx, {
             type: 'line',
             data: {
-                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                labels: JSON.parse('{{ monthly_labels | safe }}'),
                 datasets: [{
                     label: 'Amount Spent (₹)',
-                    data: [2500, 3200, 2800, 4100, 3600, 3450],
+                    data: JSON.parse('{{ monthly_values | safe }}'),
                     backgroundColor: 'rgba(20, 184, 166, 0.1)',
                     borderColor: '#14b8a6',
                     borderWidth: 3,
@@ -249,14 +330,22 @@
         });
 
         // Category Chart
+        // const categoryCtx = document.getElementById('categoryChart').getContext('2d');
+        // const categoryChart = new Chart(categoryCtx, {
+        //     type: 'doughnut',
+        //     data: {
+        //         labels: ['Food & Dining', 'Groceries', 'Transportation', 'Entertainment', 'Shopping', 'Other'],
+        //         datasets: [{
+        //             label: 'Category',
+        //             data: [4500, 3200, 2800, 2100, 1800, 1350],
         const categoryCtx = document.getElementById('categoryChart').getContext('2d');
         const categoryChart = new Chart(categoryCtx, {
             type: 'doughnut',
             data: {
-                labels: ['Food & Dining', 'Groceries', 'Transportation', 'Entertainment', 'Shopping', 'Other'],
+                labels: JSON.parse('{{ category_labels | safe }}'),
                 datasets: [{
                     label: 'Category',
-                    data: [4500, 3200, 2800, 2100, 1800, 1350],
+                    data: JSON.parse('{{ category_values | safe }}'),
                     backgroundColor: [
                         '#14b8a6', '#10b981', '#059669', '#047857', '#065f46', '#064e3b'
                     ],
@@ -416,42 +505,42 @@
             animateValue('category-count', categoryCount);
         }
         
-        function animateValue(elementId, newValue) {
-            const element = document.getElementById(elementId);
-            element.style.transform = 'scale(1.1)';
-            element.style.color = '#14b8a6';
+        // function animateValue(elementId, newValue) {
+        //     const element = document.getElementById(elementId);
+        //     element.style.transform = 'scale(1.1)';
+        //     element.style.color = '#14b8a6';
             
-            setTimeout(() => {
-                element.textContent = newValue;
-                element.style.transform = 'scale(1)';
-                element.style.color = '';
-            }, 200);
-        }
+        //     setTimeout(() => {
+        //         element.textContent = newValue;
+        //         element.style.transform = 'scale(1)';
+        //         element.style.color = '';
+        //     }, 200);
+        // }
 
         // Update stats every 30 seconds for demo
-        setInterval(updateStats, 30000);
+        // setInterval(updateStats, 30000);
         
-        function refreshData() {
-            updateStats();
+        // function refreshData() {
+        //     updateStats();
             
-            // Update charts with new data
-            const newMonthlyData = Array.from({length: 6}, () => Math.floor(Math.random() * 2000) + 2000);
-            const newCategoryData = Array.from({length: 6}, () => Math.floor(Math.random() * 2000) + 1000);
+        //     // Update charts with new data
+        //     const newMonthlyData = Array.from({length: 6}, () => Math.floor(Math.random() * 2000) + 2000);
+        //     const newCategoryData = Array.from({length: 6}, () => Math.floor(Math.random() * 2000) + 1000);
             
-            monthlyChart.data.datasets[0].data = newMonthlyData;
-            categoryChart.data.datasets[0].data = newCategoryData;
+        //     monthlyChart.data.datasets[0].data = newMonthlyData;
+        //     categoryChart.data.datasets[0].data = newCategoryData;
             
-            monthlyChart.update();
-            categoryChart.update();
+        //     monthlyChart.update();
+        //     categoryChart.update();
             
-            // Show refresh feedback
-            const refreshBtn = event.target;
-            const originalText = refreshBtn.innerHTML;
-            refreshBtn.innerHTML = '<i class="fas fa-check mr-2"></i>Refreshed!';
-            setTimeout(() => {
-                refreshBtn.innerHTML = originalText;
-            }, 1500);
-        }
+        //     // Show refresh feedback
+        //     const refreshBtn = event.target;
+        //     const originalText = refreshBtn.innerHTML;
+        //     refreshBtn.innerHTML = '<i class="fas fa-check mr-2"></i>Refreshed!';
+        //     setTimeout(() => {
+        //         refreshBtn.innerHTML = originalText;
+        //     }, 1500);
+        // }
     </script>
 </body>
 </html>
